@@ -4,7 +4,9 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.common.AssemblyManager;
 import org.firstinspires.ftc.teamcode.common.Config;
+import org.firstinspires.ftc.teamcode.drive.Drive;
 
 /**
  * Main TeleOp for Tournament
@@ -25,7 +27,7 @@ public class Main extends OpMode {
 
     @Override
     public void init() {
-        assemblies[0] = Config.Drive.NEW(hardwareMap, telemetry); // Initialize all OpModes independently (Config.{Assembly}.NEW())
+        assemblies[0] = AssemblyManager.newInstance(Drive.class, hardwareMap, telemetry, true); // Initialize all OpModes independently
     }
 
     @Override

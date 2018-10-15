@@ -2,9 +2,8 @@ package org.firstinspires.ftc.teamcode.visual;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.teamcode.common.Config;
+import org.firstinspires.ftc.teamcode.common.AssemblyManager;
 
 /**
  * MineralTest: An example of an Autonomous Test program
@@ -19,12 +18,13 @@ public class MineralTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        Visual v = Config.Visual.NEW(hardwareMap, telemetry); // Initialize the Visual Assembly
+        Visual.DEBUG = true;
+        Visual v = AssemblyManager.newInstance(Visual.class, hardwareMap, telemetry); // Initialize the Visual Assembly
 
         waitForStart();                                       // Wait for Start
 
         while (!isStopRequested()) {
-            v.inspectFrame(false);                     // Inspect the frame from the camera
+            v.findGoldMineral(false);                     // Inspect the frame from the camera
         }
 
         v.stop();                                             // Stop the visual controller (close views...)

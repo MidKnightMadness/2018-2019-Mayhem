@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode.drive;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+import org.firstinspires.ftc.teamcode.common.Angle;
 import org.firstinspires.ftc.teamcode.common.Config;
+import org.firstinspires.ftc.teamcode.common.Distance;
 
 /**
  * TankDrive: A simple Drive implementation for a tank-drive robot.
@@ -26,27 +27,36 @@ public class TankDrive extends Drive {
     @Override
     public void init() {
         frontLeft = hardwareMap.dcMotor.get(Config.Drive.FRONT_LEFT);    // Retrieve the motor from the hardwareMap with the name set in the Config class
-        frontLeft.resetDeviceConfigurationForOpMode();                   // Reset the motor
-        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);          // Set the runMode
-        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); // Set the motor to brake when stopped as opposed to coast.
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);         // Reverse the left motors because they are facing the opposite direction.
-
+        frontRight = hardwareMap.dcMotor.get(Config.Drive.FRONT_RIGHT);
+        backLeft = hardwareMap.dcMotor.get(Config.Drive.BACK_LEFT);
         backRight = hardwareMap.dcMotor.get(Config.Drive.BACK_RIGHT);
+
+        frontLeft.resetDeviceConfigurationForOpMode();
+        frontRight.resetDeviceConfigurationForOpMode();
+        backLeft.resetDeviceConfigurationForOpMode();
         backRight.resetDeviceConfigurationForOpMode();
-        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        backLeft = hardwareMap.dcMotor.get(Config.Drive.BACK_LEFT);
-        backLeft.resetDeviceConfigurationForOpMode();
-        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        frontRight = hardwareMap.dcMotor.get(Config.Drive.FRONT_RIGHT);
-        frontRight.resetDeviceConfigurationForOpMode();
-        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);         // Reverse the left motors because they are facing the opposite direction.
     }
+
+    public void init_loop() {
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
 
     @Override
     public void loop() {
@@ -57,15 +67,38 @@ public class TankDrive extends Drive {
     }
 
     @Override
-    public void moveBot(int distance, int speed) throws InterruptedException {
+    public void beginTranslation(Distance distance, double speed) {
+        frontLeft.setTargetPosition(frontLeft.getCurrentPosition() + distance.toEncoderTicks());
+        frontRight.setTargetPosition(frontRight.getCurrentPosition() + distance.toEncoderTicks());
+        backLeft.setTargetPosition(backLeft.getCurrentPosition() + distance.toEncoderTicks());
+        backRight.setTargetPosition(backRight.getCurrentPosition() + distance.toEncoderTicks());
+
         frontLeft.setPower(speed);
         frontRight.setPower(speed);
         backLeft.setPower(speed);
         backRight.setPower(speed);
-        Thread.sleep(2000);
-        frontRight.setPower(0);
-        frontLeft.setPower(0);
-        backLeft.setPower(0);
-        backRight.setPower(0);
+    }
+
+    public void beginRotation(Angle angle, double speed) {
+        frontLeft.setTargetPosition(frontLeft.getCurrentPosition() - angle.toEncoderTicks()); // Note negative
+        frontRight.setTargetPosition(frontRight.getCurrentPosition() + angle.toEncoderTicks());
+        backLeft.setTargetPosition(backLeft.getCurrentPosition() - angle.toEncoderTicks());   // Note negative
+        backRight.setTargetPosition(backRight.getCurrentPosition() + angle.toEncoderTicks());
+
+        frontLeft.setPower(speed);
+        frontRight.setPower(speed);
+        backLeft.setPower(speed);
+        backRight.setPower(speed);
+    }
+
+    @Override
+    public void beginMovement(Distance distance, Angle rotation, double speed) {
+        beginTranslation(distance, speed);
+        while (isBusy() && !Thread.currentThread().isInterrupted());
+        beginRotation(rotation, speed);
+    }
+
+    public boolean isBusy() {
+        return frontLeft.isBusy() || frontRight.isBusy() || backLeft.isBusy() || backRight.isBusy();
     }
 }
