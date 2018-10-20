@@ -7,6 +7,7 @@ import android.os.Environment;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.vuforia.PIXEL_FORMAT;
 import com.vuforia.Vuforia;
 
@@ -30,6 +31,7 @@ import static org.firstinspires.ftc.teamcode.visual.Visual.MineralPosition.UNKNO
  * Created by Gregory on 9/14/18.
  */
 
+@TeleOp
 public class VisualImpl extends Visual {
 
     private VuforiaLocalizer vuforia;
@@ -41,7 +43,6 @@ public class VisualImpl extends Visual {
     public void init() {
         telemetry.addLine("Initializing");
         telemetry.addData("Debug", DEBUG);
-        telemetry.addData("Debug2", Visual.DEBUG);
         telemetry.update();
         // Init the VuforiaLocalizer parameters object with the camera View ID
         VuforiaLocalizer.Parameters params = new VuforiaLocalizer.Parameters(); // to see the view, add com.qualcomm.ftcrobotcontroller.R.id.cameraMonitorViewId as param
@@ -101,44 +102,27 @@ public class VisualImpl extends Visual {
                 m.postScale(-1, -1);
                 Bitmap srcBmp = Bitmap.createBitmap(unflippedBmp, 0, 0, unflippedBmp.getWidth(), unflippedBmp.getHeight(), m, false);
                 // Output the height and width of the source image
-                telemetry.addLine("Height: " + srcBmp.getHeight());
-                telemetry.addLine("Width: " + srcBmp.getWidth());
+                //telemetry.addLine("Height: " + srcBmp.getHeight());
+                //telemetry.addLine("Width: " + srcBmp.getWidth());
                 int WIDTH = 20;
                 int HEIGHT = 12;
-                telemetry.addLine("Modified Width: " + WIDTH);
-                telemetry.addLine("Modified Height: " + HEIGHT);
+                //telemetry.addLine("Modified Width: " + WIDTH);
+                //telemetry.addLine("Modified Height: " + HEIGHT);
 
                 // Scale the Bitmap to a smaller, more reasonable size. (src, width, height, filter?)
                 final Bitmap outBmp = Bitmap.createScaledBitmap(srcBmp, WIDTH, HEIGHT, false);
 
-                if (save) {
-                    try {
-                        // Save Src
-                        String name = "Output_" + Math.random();
-                        File srcFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), name + "Src.png");
-                        FileOutputStream srcStream = new FileOutputStream(srcFile);
-                        srcBmp.compress(Bitmap.CompressFormat.PNG, 100, srcStream);
-                        srcStream.close();
-                        // Save Out
-                        File outFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), name + "Out.png");
-                        FileOutputStream outStream = new FileOutputStream(outFile);
-                        outBmp.compress(Bitmap.CompressFormat.PNG, 100, outStream);
-                        outStream.close();
-                    } catch (Exception e) {
-                        telemetry.addLine(e.toString());
-                        telemetry.update();
-                    }
-                }
+
 
                 final Bitmap resBmp = Bitmap.createBitmap(outBmp);
                 resBmp.eraseColor(Color.BLACK);
 
                 boolean foundFirstYellow = false;
-                for (int y = HEIGHT - 1; y >= 0; y--) {
+                for (int y = 0; y < HEIGHT; y++) {
                     for (int x = 0; x < WIDTH; x++) {
                         float[] hsv = new float[3];
                         Color.colorToHSV(outBmp.getPixel(x, y), hsv);
-                        //telemetry.addData("Color", "H: %3f, S: %3f, V: %3f", hsv[0], hsv[1], hsv[2]);
+
                         if (hsv[0] > minYellow[0] && hsv[0] < maxYellow[0] &&
                             hsv[1] > minYellow[1] && hsv[1] < maxYellow[1] &&
                             hsv[2] > minYellow[2] && hsv[2] < maxYellow[2]) {
@@ -146,10 +130,12 @@ public class VisualImpl extends Visual {
                                 resBmp.setPixel(x, y, Color.rgb(255, 127, 0));
                                 position = x < WIDTH / 3 ? LEFT : (x <= 2 * (WIDTH / 3) ? CENTER : RIGHT);
                                 telemetry.addData("YELLOW FOUND AT", position.toString());
+
                                 foundFirstYellow = true;
                             } else {
                                 resBmp.setPixel(x, y, Color.YELLOW);
                             }
+                            //telemetry.addData("Color", "H: %3f, S: %3f, V: %3f", hsv[0], hsv[1], hsv[2]);
                         } else if (hsv[0] > minWhite[0] && hsv[0] < maxWhite[0] &&
                                    hsv[1] > minWhite[1] && hsv[1] < maxWhite[1] &&
                                    hsv[2] > minWhite[2] && hsv[2] < maxWhite[2]) {
@@ -157,7 +143,32 @@ public class VisualImpl extends Visual {
                         }
                     }
 
-                    telemetry.update();
+                }
+                telemetry.update();
+
+
+                if (save) {
+                    try {
+                        // Save Src
+                        String name = "Output_" + Math.random();
+                        File srcFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "Pictures/minerals/" + name + "Src.png");
+                        FileOutputStream srcStream = new FileOutputStream(srcFile);
+                        srcBmp.compress(Bitmap.CompressFormat.PNG, 100, srcStream);
+                        srcStream.close();
+                        // Save Out
+                        File outFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "Pictures/minerals/" + name + "Out.png");
+                        FileOutputStream outStream = new FileOutputStream(outFile);
+                        outBmp.compress(Bitmap.CompressFormat.PNG, 100, outStream);
+                        outStream.close();
+
+                        File resFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "Pictures/minerals/" + name + "Res.png");
+                        FileOutputStream resStream = new FileOutputStream(resFile);
+                        resBmp.compress(Bitmap.CompressFormat.PNG, 100, resStream);
+                        resStream.close();
+                    } catch (Exception e) {
+                        telemetry.addLine(e.toString());
+                        telemetry.update();
+                    }
                 }
 
                 if (Visual.DEBUG) {
@@ -174,9 +185,9 @@ public class VisualImpl extends Visual {
         return position;
     }
 
-    private int valueTest(int color) {
+    /*private int valueTest(int color) {
         return Color.blue(color);
-    }
+    }*/
 
     public void stop() {
         if (Visual.DEBUG) {
@@ -190,5 +201,21 @@ public class VisualImpl extends Visual {
         }
     }
 
-
+    public void loop() {
+        if (gamepad1.x) {
+            minYellow[0] += (gamepad1.dpad_left ? 1 : (gamepad1.dpad_right ? -1 : 0)) * 0.5;
+            minYellow[1] += (gamepad1.left_trigger > 0.2 ? 1 : (gamepad1.right_trigger > 0.2 ? -1 : 0)) * 0.005;
+            minYellow[2] += (gamepad1.left_bumper ? 1 : (gamepad1.right_bumper ? -1 : 0)) * 0.005;
+        } else {
+            maxYellow[0] += (gamepad1.dpad_left ? 1 : (gamepad1.dpad_right ? -1 : 0)) * 0.5;
+            maxYellow[1] += (gamepad1.left_trigger > 0.2 ? 1 : (gamepad1.right_trigger > 0.2 ? -1 : 0)) * 0.005;
+            maxYellow[2] += (gamepad1.left_bumper ? 1 : (gamepad1.right_bumper ? -1 : 0)) * 0.005;
+        }
+        try {
+            findGoldMineral(false);
+        } catch (Exception e) {}
+        telemetry.addData("Min Yellow", "H: %3f, S: %3f, V: %3f", minYellow[0], minYellow[1], minYellow[2]);
+        telemetry.addData("Max Yellow", "H: %3f, S: %3f, V: %3f", maxYellow[0], maxYellow[1], maxYellow[2]);
+        telemetry.update();
+    }
 }

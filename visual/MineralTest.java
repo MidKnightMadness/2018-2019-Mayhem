@@ -24,6 +24,7 @@ public class MineralTest extends LinearOpMode {
         waitForStart();                                       // Wait for Start
 
         while (!isStopRequested()) {
+            //Thread.sleep(2000);
             v.findGoldMineral(false);                     // Inspect the frame from the camera
         }
 

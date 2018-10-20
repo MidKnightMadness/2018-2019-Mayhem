@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.visual;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.common.AssemblyManager.Implementation;
 
@@ -8,7 +10,7 @@ import org.firstinspires.ftc.teamcode.common.AssemblyManager.Implementation;
  */
 
 @Implementation(VisualImpl.class)
-public abstract class Visual {
+public abstract class Visual extends OpMode {
     public enum MineralPosition {
         LEFT,
         CENTER,
@@ -22,14 +24,13 @@ public abstract class Visual {
     }
     static boolean DEBUG = true;
 
-    public static double minYellow[] = {20, 0.5, 0.5};
+    public static double minYellow[] = {20, 0.5, 0.3};
     public static double maxYellow[] = {45, 1, 1};
     public static double minWhite[] = {0, 0, 0.8};
     public static double maxWhite[] = {255, 0.2, 1};
 
 
 
-    public Telemetry telemetry;
     public abstract void init();
     public abstract MineralPosition findGoldMineral(boolean save) throws InterruptedException;
     public abstract void stop();

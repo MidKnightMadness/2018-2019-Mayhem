@@ -16,6 +16,11 @@ public final class Config {
         public static final String FRONT_RIGHT = "front right";
     }
 
+    public static final class Hand {     // Drive Assembly Configuration
+        public static final String HAND_SERVO = "hand servo";
+
+    }
+
     public static final class Measurements {
         public static final double ROBOT_DEGREES_PER_TICK = 0.5d;
         public static final int ENCODER_TICKS_PER_INCH = 1000;
