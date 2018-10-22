@@ -4,10 +4,12 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.os.Environment;
+import android.support.annotation.Nullable;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.vuforia.CameraDevice;
 import com.vuforia.PIXEL_FORMAT;
 import com.vuforia.Vuforia;
 
@@ -31,7 +33,6 @@ import static org.firstinspires.ftc.teamcode.visual.Visual.MineralPosition.UNKNO
  * Created by Gregory on 9/14/18.
  */
 
-@TeleOp
 public class VisualImpl extends Visual {
 
     private VuforiaLocalizer vuforia;
@@ -83,10 +84,17 @@ public class VisualImpl extends Visual {
                 }
             });
         }
+
+        // Flash On:
+        CameraDevice.getInstance().setFlashTorchMode(true);
         // Unable to use Vuforia Targets for minerals :(
     }
 
     public MineralPosition findGoldMineral(boolean save) throws InterruptedException {
+        return findGoldMineral(save, -1, -1);
+    }
+
+    public MineralPosition findGoldMineral(boolean save, int print_x, int print_y) throws InterruptedException {
         VuforiaLocalizer.CloseableFrame frame = vuforia.getFrameQueue().take();
         MineralPosition position = UNKNOWN;
 
@@ -117,12 +125,13 @@ public class VisualImpl extends Visual {
                 final Bitmap resBmp = Bitmap.createBitmap(outBmp);
                 resBmp.eraseColor(Color.BLACK);
 
+
                 boolean foundFirstYellow = false;
+                double[] hsv = new double[3];
                 for (int y = 0; y < HEIGHT; y++) {
                     for (int x = 0; x < WIDTH; x++) {
-                        float[] hsv = new float[3];
-                        Color.colorToHSV(outBmp.getPixel(x, y), hsv);
 
+                        colorToHSV(outBmp.getPixel(x, y), hsv);
                         if (hsv[0] > minYellow[0] && hsv[0] < maxYellow[0] &&
                             hsv[1] > minYellow[1] && hsv[1] < maxYellow[1] &&
                             hsv[2] > minYellow[2] && hsv[2] < maxYellow[2]) {
@@ -142,9 +151,15 @@ public class VisualImpl extends Visual {
                             resBmp.setPixel(x, y, Color.WHITE);
                         }
                     }
-
                 }
-                telemetry.update();
+
+                if (print_x != -1 && print_y != -1) {
+                    colorToHSV(outBmp.getPixel(print_x, print_y), hsv);
+                    telemetry.addData("Selected", "H: %3f, S: %3f, V: %3f", hsv[0], hsv[1], hsv[2]);
+                    resBmp.setPixel(print_x, print_y, Color.CYAN);
+                }
+
+                //telemetry.update();
 
 
                 if (save) {
@@ -199,23 +214,27 @@ public class VisualImpl extends Visual {
                 }
             });
         }
+
+        // Flash Off
+        CameraDevice.getInstance().setFlashTorchMode(false);
     }
 
-    public void loop() {
-        if (gamepad1.x) {
-            minYellow[0] += (gamepad1.dpad_left ? 1 : (gamepad1.dpad_right ? -1 : 0)) * 0.5;
-            minYellow[1] += (gamepad1.left_trigger > 0.2 ? 1 : (gamepad1.right_trigger > 0.2 ? -1 : 0)) * 0.005;
-            minYellow[2] += (gamepad1.left_bumper ? 1 : (gamepad1.right_bumper ? -1 : 0)) * 0.005;
-        } else {
-            maxYellow[0] += (gamepad1.dpad_left ? 1 : (gamepad1.dpad_right ? -1 : 0)) * 0.5;
-            maxYellow[1] += (gamepad1.left_trigger > 0.2 ? 1 : (gamepad1.right_trigger > 0.2 ? -1 : 0)) * 0.005;
-            maxYellow[2] += (gamepad1.left_bumper ? 1 : (gamepad1.right_bumper ? -1 : 0)) * 0.005;
-        }
-        try {
-            findGoldMineral(false);
-        } catch (Exception e) {}
-        telemetry.addData("Min Yellow", "H: %3f, S: %3f, V: %3f", minYellow[0], minYellow[1], minYellow[2]);
-        telemetry.addData("Max Yellow", "H: %3f, S: %3f, V: %3f", maxYellow[0], maxYellow[1], maxYellow[2]);
-        telemetry.update();
+
+    public void loop() {}
+
+    private void colorToHSV(int color, double[]hsv) {
+        double r = Color.red(color) / 255d;
+        double b = Color.blue(color) / 255d;
+        double g = Color.green(color) / 255d;
+        double cmin = Math.min(r, Math.min(b, g));
+        double cmax = Math.max(r, Math.max(b, g));
+        double delta = cmax - cmin;
+
+        hsv[0] = delta == 0 ? 0 :
+                 cmax == r ? 60 * ((g-b)/delta) :
+                 cmax == g ? 60 * ((b-r)/delta + 2) :
+                             60 * ((r-g)/delta + 4);
+        hsv[1] = cmax == 0 ? 0 : delta / cmax;
+        hsv[2] = cmax;
     }
 }
