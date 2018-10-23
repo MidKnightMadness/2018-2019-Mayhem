@@ -71,7 +71,7 @@ public class ColorPicker extends OpMode {
         }
 
         try {
-            v.findGoldMineral(false, print_x, print_y);
+            v.isGoldMineral(false, print_x, print_y);
         } catch (Exception e) {}
 
         telemetry.update();

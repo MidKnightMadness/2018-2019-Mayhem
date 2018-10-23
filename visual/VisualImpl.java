@@ -88,13 +88,13 @@ public class VisualImpl extends Visual {
         // Unable to use Vuforia Targets for minerals :(
     }
 
-    public MineralPosition findGoldMineral(boolean save) throws InterruptedException {
-        return findGoldMineral(save, -1, -1);
+    public int isGoldMineral(boolean save) throws InterruptedException {
+        return isGoldMineral(save, -1, -1);
     }
 
-    public MineralPosition findGoldMineral(boolean save, int print_x, int print_y) throws InterruptedException {
+    public int isGoldMineral(boolean save, int print_x, int print_y) throws InterruptedException {
         VuforiaLocalizer.CloseableFrame frame = vuforia.getFrameQueue().take();
-        MineralPosition position = UNKNOWN;
+        int isYellow = -1;
 
         // One frame contains multiple image formats. Loop through all formats to find RGB565
         for (int i = 0; i < frame.getNumImages(); i++) {
@@ -124,7 +124,7 @@ public class VisualImpl extends Visual {
                 resBmp.eraseColor(Color.BLACK);
 
 
-                boolean foundFirstYellow = false;
+                double yellowCount = 1, whiteCount = 1;
                 double[] hsv = new double[3];
                 for (int y = 0; y < HEIGHT; y++) {
                     for (int x = 0; x < WIDTH; x++) {
@@ -133,21 +133,23 @@ public class VisualImpl extends Visual {
                         if (hsv[0] >= minYellow[0] && hsv[0] <= maxYellow[0] &&
                             hsv[1] >= minYellow[1] && hsv[1] <= maxYellow[1] &&
                             hsv[2] >= minYellow[2] && hsv[2] <= maxYellow[2]) {
-                            if (!foundFirstYellow) {
-                                resBmp.setPixel(x, y, Color.rgb(255, 127, 0));
-                                position = x < WIDTH / 3 ? LEFT : (x <= 2 * (WIDTH / 3) ? CENTER : RIGHT);
-                                telemetry.addData("YELLOW FOUND AT", position.toString());
+                            yellowCount++;
+                            resBmp.setPixel(x, y, Color.YELLOW);
 
-                                foundFirstYellow = true;
-                            } else {
-                                resBmp.setPixel(x, y, Color.YELLOW);
-                            }
-                            //telemetry.addData("Color", "H: %3f, S: %3f, V: %3f", hsv[0], hsv[1], hsv[2]);
                         } else if (hsv[0] >= minWhite[0] && hsv[0] <= maxWhite[0] &&
                                    hsv[1] >= minWhite[1] && hsv[1] <= maxWhite[1] &&
                                    hsv[2] >= minWhite[2] && hsv[2] <= maxWhite[2]) {
+                            whiteCount++;
                             resBmp.setPixel(x, y, Color.WHITE);
                         }
+                    }
+                }
+
+                if (yellowCount + whiteCount > 5) {
+                    if (yellowCount / whiteCount > 1) {
+                        isYellow = 1;
+                    } else {
+                        isYellow = 0;
                     }
                 }
 
@@ -199,7 +201,8 @@ public class VisualImpl extends Visual {
                 }
             }
         }
-        return position;
+        telemetry.addData("Is Yellow", isYellow);
+        return isYellow;
     }
 
     /*private int valueTest(int color) {

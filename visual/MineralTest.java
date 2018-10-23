@@ -25,7 +25,9 @@ public class MineralTest extends LinearOpMode {
 
         while (!isStopRequested()) {
             //Thread.sleep(2000);
-            v.findGoldMineral(false);                     // Inspect the frame from the camera
+            v.isGoldMineral(false);
+            telemetry.update();// Inspect the frame from the camera
+            telemetry.clear();
         }
 
         v.stop();                                             // Stop the visual controller (close views...)
