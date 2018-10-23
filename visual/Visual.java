@@ -25,7 +25,7 @@ public abstract class Visual extends OpMode {
     static boolean DEBUG = true;
 
     public static double minYellow[] = {20, 0.5, 0.3};
-    public static double maxYellow[] = {45, 1, 1};
+    public static double maxYellow[] = {62, 1, 1};
     public static double minWhite[] = {0, 0, 0.8};
     public static double maxWhite[] = {255, 0.2, 1};
 

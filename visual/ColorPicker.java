@@ -12,6 +12,7 @@ public class ColorPicker extends OpMode {
     @Override
     public void init() {
         Visual.DEBUG = true;
+        telemetry.setAutoClear(false);
         v = AssemblyManager.newInstance(Visual.class, hardwareMap, telemetry);
     }
 
@@ -24,6 +25,7 @@ public class ColorPicker extends OpMode {
 
     @Override
     public void loop() {
+
         /*if (gamepad1.x) {
             minYellow[0] += (gamepad1.dpad_left ? 1 : (gamepad1.dpad_right ? -1 : 0)) * 0.5;
             minYellow[1] += (gamepad1.left_trigger > 0.2 ? 1 : (gamepad1.right_trigger > 0.2 ? -1 : 0)) * 0.005;
@@ -73,6 +75,7 @@ public class ColorPicker extends OpMode {
         } catch (Exception e) {}
 
         telemetry.update();
+        telemetry.clear();
     }
 
     @Override

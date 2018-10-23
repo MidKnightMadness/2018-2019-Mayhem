@@ -4,13 +4,10 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.os.Environment;
-import android.support.annotation.Nullable;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.vuforia.CameraDevice;
-import com.vuforia.PIXEL_FORMAT;
 import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -39,6 +36,7 @@ public class VisualImpl extends Visual {
     private ViewGroup parentView;
     private ImageView cameraView;
     private ImageView resultView;
+    private final int RGB565 = 1; // For OnBotJava
 
     @Override
     public void init() {
@@ -61,14 +59,14 @@ public class VisualImpl extends Visual {
         vuforia = ClassFactory.getInstance().createVuforia(params);
 
         // Save an rgb565 image for further processing each frame and only save current frame
-        Vuforia.setFrameFormat(PIXEL_FORMAT.RGB565, true);
+        Vuforia.setFrameFormat(RGB565, true);
         vuforia.setFrameQueueCapacity(1);
 
         if (Visual.DEBUG) {
             AppUtil.getInstance().synchronousRunOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    parentView = (ViewGroup) AppUtil.getInstance().getActivity().findViewById(com.qualcomm.ftcrobotcontroller.R.id.cameraMonitorViewId);
+                    parentView = (ViewGroup) AppUtil.getInstance().getActivity().findViewById(hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
                     cameraView = new ImageView(AppUtil.getInstance().getApplication().getApplicationContext());
                     Bitmap image = Bitmap.createBitmap(1000, 600, Bitmap.Config.RGB_565);
                     image.eraseColor(Color.GREEN);
@@ -100,7 +98,7 @@ public class VisualImpl extends Visual {
 
         // One frame contains multiple image formats. Loop through all formats to find RGB565
         for (int i = 0; i < frame.getNumImages(); i++) {
-            if (frame.getImage(i).getFormat() == PIXEL_FORMAT.RGB565) {
+            if (frame.getImage(i).getFormat() == RGB565) {
 
                 // Make a Bitmap object out of the vuforia frame (vertically mirrored)
                 Bitmap unflippedBmp = Bitmap.createBitmap(frame.getImage(i).getWidth(), frame.getImage(i).getHeight(), Bitmap.Config.RGB_565);
@@ -132,9 +130,9 @@ public class VisualImpl extends Visual {
                     for (int x = 0; x < WIDTH; x++) {
 
                         colorToHSV(outBmp.getPixel(x, y), hsv);
-                        if (hsv[0] > minYellow[0] && hsv[0] < maxYellow[0] &&
-                            hsv[1] > minYellow[1] && hsv[1] < maxYellow[1] &&
-                            hsv[2] > minYellow[2] && hsv[2] < maxYellow[2]) {
+                        if (hsv[0] >= minYellow[0] && hsv[0] <= maxYellow[0] &&
+                            hsv[1] >= minYellow[1] && hsv[1] <= maxYellow[1] &&
+                            hsv[2] >= minYellow[2] && hsv[2] <= maxYellow[2]) {
                             if (!foundFirstYellow) {
                                 resBmp.setPixel(x, y, Color.rgb(255, 127, 0));
                                 position = x < WIDTH / 3 ? LEFT : (x <= 2 * (WIDTH / 3) ? CENTER : RIGHT);
@@ -145,9 +143,9 @@ public class VisualImpl extends Visual {
                                 resBmp.setPixel(x, y, Color.YELLOW);
                             }
                             //telemetry.addData("Color", "H: %3f, S: %3f, V: %3f", hsv[0], hsv[1], hsv[2]);
-                        } else if (hsv[0] > minWhite[0] && hsv[0] < maxWhite[0] &&
-                                   hsv[1] > minWhite[1] && hsv[1] < maxWhite[1] &&
-                                   hsv[2] > minWhite[2] && hsv[2] < maxWhite[2]) {
+                        } else if (hsv[0] >= minWhite[0] && hsv[0] <= maxWhite[0] &&
+                                   hsv[1] >= minWhite[1] && hsv[1] <= maxWhite[1] &&
+                                   hsv[2] >= minWhite[2] && hsv[2] <= maxWhite[2]) {
                             resBmp.setPixel(x, y, Color.WHITE);
                         }
                     }
@@ -157,6 +155,10 @@ public class VisualImpl extends Visual {
                     colorToHSV(outBmp.getPixel(print_x, print_y), hsv);
                     telemetry.addData("Selected", "H: %3f, S: %3f, V: %3f", hsv[0], hsv[1], hsv[2]);
                     resBmp.setPixel(print_x, print_y, Color.CYAN);
+                    if (print_x > 0) {outBmp.setPixel(print_x - 1, print_y, Color.CYAN);}
+                    if (print_x < 19) {outBmp.setPixel(print_x + 1, print_y, Color.CYAN);}
+                    if (print_y > 0) {outBmp.setPixel(print_x, print_y - 1, Color.CYAN);}
+                    if (print_y < 11) {outBmp.setPixel(print_x, print_y + 1, Color.CYAN);}
                 }
 
                 //telemetry.update();
