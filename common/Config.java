@@ -21,6 +21,13 @@ public final class Config {
 
     }
 
+    public static final class PullUp {     // Drive Assembly Configuration
+        public static final String PULLUP_MOTOR = "pull up motor";
+        public static final String PULLUP_SERVO = "pull up servo";
+
+
+    }
+
     public static final class Measurements {
         public static final double ROBOT_DEGREES_PER_TICK = 0.5d;
         public static final int ENCODER_TICKS_PER_INCH = 1000;

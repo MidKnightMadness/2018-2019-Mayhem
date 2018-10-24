@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.common.Angle;
  */
 
 @Implementation(TankDrive.class)
+@TeleOpImplementation(OmniDrive.class)
 public abstract class Drive extends OpMode {
     public abstract void init(); // Initialize Motors
 

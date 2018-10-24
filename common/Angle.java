@@ -54,4 +54,34 @@ public class Angle {
         degrees *= multiplicand;
         return this.normalize();
     }
+
+    public static Angle aTan(double x, double y) {
+        double a = 0;
+        if (y == 0) {
+            if (x < 0) {
+                a = -90;
+            } else if (x > 0) {
+                a = 90;
+            } else if (x == 0) {
+                a = 0;
+            }
+        } else if (x == 0) {
+            a = 0;
+        } else {
+            a = (Math.atan(x/y)*(180/Math.PI));
+        }
+
+        if (y < 0) {
+            if (x < 0) {
+                a -= 180;
+            } else {
+                a += 180;
+            }
+        }
+        return Angle.fromDegrees(a);
+    }
+
+    public double getRadians() {
+        return getDegrees() * Math.PI / 180d;
+    }
 }
