@@ -38,7 +38,7 @@ public class AngularPullUp extends PullUp {
     }
 
     public void raise() {
-        pullUpMotor.setTargetPosition(TARGET_POSITION_TO_OPEN);
+        pullUpMotor.setTargetPosition(-TARGET_POSITION_TO_OPEN);
         pullUpMotor.setPower(1);
         while (pullUpMotor.isBusy() && !Thread.currentThread().isInterrupted()){}
         pullUpServo.setPosition(0.6);

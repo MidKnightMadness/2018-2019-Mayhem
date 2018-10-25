@@ -16,14 +16,20 @@ public final class Config {
         public static final String FRONT_RIGHT = "front right";
     }
 
-    public static final class Hand {     // Drive Assembly Configuration
+    public static final class Hand {     // Hand Assembly Configuration
         public static final String HAND_SERVO = "hand servo";
 
     }
 
-    public static final class PullUp {     // Drive Assembly Configuration
+    public static final class PullUp {     // Pull-up Assembly Configuration
         public static final String PULLUP_MOTOR = "pull up motor";
         public static final String PULLUP_SERVO = "pull up servo";
+
+    }
+
+    public static final class MineralArm {      // Mineral Arm Assembly Configuration
+        public static final String MINERAL_EXTEND_MOTOR = "mineral extending motor";
+        public static final String MINERAL_ROTATE_MOTOR = "mineral rotating motor";
 
 
     }

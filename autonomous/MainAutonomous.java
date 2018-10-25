@@ -34,4 +34,6 @@ public class MainAutonomous extends LinearOpMode {
         waitForStart();                                               // Wait for Start Button
         d.beginTranslation(Distance.fromInches(10), 1);                 // Move the Robot (or something)
     }
+
+
 }
