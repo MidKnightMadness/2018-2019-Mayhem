@@ -25,7 +25,7 @@ public final class AssemblyManager {
 
     public static <T> T newInstance(Class<T> clazz, HardwareMap hardwareMap, Telemetry telemetry) { return newInstance(clazz, hardwareMap, telemetry, false); }
     @SuppressWarnings("EmptyCatchBlock")
-    public static <T> T newInstance(Class<T> clazz, HardwareMap hardwareMap, Telemetry telemetry, boolean teleop) {
+    public static <T> T newInstance(Class<T> clazz, HardwareMap hardwareMap, Telemetry telemetry, boolean teleop) throws Error {
         try {
             Object o;
             if (teleop && clazz.isAnnotationPresent(TeleOpImplementation.class)) {
@@ -33,7 +33,7 @@ public final class AssemblyManager {
             } else if (clazz.isAnnotationPresent(Implementation.class)) {
                 o = clazz.getAnnotation(Implementation.class).value().newInstance();
             } else {
-                throw new Error("Interface is not annotated: " + clazz.getSimpleName());
+                o = clazz.newInstance();
             }
 
             T t = clazz.cast(o);

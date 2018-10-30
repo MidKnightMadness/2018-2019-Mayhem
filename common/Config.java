@@ -10,10 +10,10 @@ package org.firstinspires.ftc.teamcode.common;
 
 public final class Config {
     public static final class Drive {     // Drive Assembly Configuration
-        public static final String FRONT_LEFT = "front left";
-        public static final String BACK_RIGHT = "back right";
-        public static final String BACK_LEFT = "back left";
-        public static final String FRONT_RIGHT = "front right";
+        public static final String FRONT_LEFT = "front left"; // 0
+        public static final String BACK_RIGHT = "back right"; // 2
+        public static final String BACK_LEFT = "back left"; // 3
+        public static final String FRONT_RIGHT = "front right"; // 1
     }
 
     public static final class Hand {     // Hand Assembly Configuration
@@ -22,7 +22,7 @@ public final class Config {
     }
 
     public static final class PullUp {     // Pull-up Assembly Configuration
-        public static final String PULLUP_MOTOR = "pull up motor";
+        public static final String PULLUP_MOTOR = "pull up motor"; //
         public static final String PULLUP_SERVO = "pull up servo";
 
     }
@@ -35,8 +35,8 @@ public final class Config {
     }
 
     public static final class Measurements {
-        public static final double ROBOT_DEGREES_PER_TICK = 0.5d;
-        public static final int ENCODER_TICKS_PER_INCH = 1000;
+        public static final double ROBOT_DEGREES_PER_TICK = 0.04939d;
+        public static final double ENCODER_TICKS_PER_INCH = 5000d/68d;
         public static final int ENCODER_TICKS_PER_SHAFT_DEGREE = 1100;
     }
 }

@@ -4,8 +4,13 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.common.AssemblyManager;
+import org.firstinspires.ftc.teamcode.common.Config;
 import org.firstinspires.ftc.teamcode.common.Distance;
 import org.firstinspires.ftc.teamcode.drive.Drive;
+import org.firstinspires.ftc.teamcode.hand.Hand;
+import org.firstinspires.ftc.teamcode.mineral.MineralArm;
+import org.firstinspires.ftc.teamcode.pullup.AngularPullUp;
+import org.firstinspires.ftc.teamcode.pullup.PullUp;
 import org.firstinspires.ftc.teamcode.visual.Visual;
 
 /**
@@ -28,11 +33,24 @@ import org.firstinspires.ftc.teamcode.visual.Visual;
 public class MainAutonomous extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {   // This method is run by the OpMode Manager on init until the stop button is pressed.
-        Drive d = AssemblyManager.newInstance(Drive.class, hardwareMap, telemetry); // Initialize all Assemblies required during the Autonomous program by the interface
-        Visual v = AssemblyManager.newInstance(Visual.class, hardwareMap, telemetry);
+        //Drive d = AssemblyManager.newInstance(Drive.class, hardwareMap, telemetry); // Initialize all Assemblies required during the Autonomous program by the interface
+        //Visual v = AssemblyManager.newInstance(Visual.class, hardwareMap, telemetry);
+        PullUp p = AssemblyManager.newInstance(PullUp.class, hardwareMap, telemetry);
+        //Hand h = AssemblyManager.newInstance(Hand.class, hardwareMap, telemetry);
+        //MineralArm m = AssemblyManager.newInstance(MineralArm.class, hardwareMap, telemetry);
+
 
         waitForStart();                                               // Wait for Start Button
-        d.beginTranslation(Distance.fromInches(10), 1);                 // Move the Robot (or something)
+        p.lower(); // Lower bot from hanging position
+        Thread.sleep(4000);
+        p.raise();
+        /*d.beginTranslationSide(Distance.fromInches(-4),1);
+        d.beginTranslation(Distance.fromInches(15),1);
+        d.beginTranslationSide(Distance.fromInches(17),1);*/
+
+
+
+
     }
 
 

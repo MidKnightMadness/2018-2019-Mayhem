@@ -23,6 +23,7 @@ public abstract class Drive extends OpMode {
 
     // Begin moving forward or backwards
     public abstract void beginTranslation(Distance distance, double speed); // Move the robot for distance rotations? at speed.
+    public abstract void beginTranslationSide(Distance distance, double speed);
     public abstract void beginRotation(Angle rotation, double speed);
     public abstract void beginMovement(Distance distance, Angle rotation, double speed) throws InterruptedException;
     public abstract boolean isBusy();

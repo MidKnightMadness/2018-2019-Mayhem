@@ -19,10 +19,10 @@ public class TankDrive extends Drive {
 
     // Declare Motors
     // DO NOT assign them to anything yet because hardwareMap is not necessarily defined until init runs.
-    private DcMotor frontLeft;
-    private DcMotor frontRight;
-    private DcMotor backLeft;
-    private DcMotor backRight;
+    public DcMotor frontLeft;
+    public DcMotor frontRight;
+    public DcMotor backLeft;
+    public DcMotor backRight;
 
     @Override
     public void init() {
@@ -45,10 +45,8 @@ public class TankDrive extends Drive {
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);         // Reverse the left motors because they are facing the opposite direction.
     }
+
 
     public void init_loop() {
         frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -60,16 +58,32 @@ public class TankDrive extends Drive {
 
     @Override
     public void loop() {
+        telemetry.addData("RIGHT", gamepad1.right_stick_y);
+        telemetry.addData("LEFT", gamepad1.left_stick_y);
         frontLeft.setPower(gamepad1.left_stick_y);
-        frontRight.setPower(gamepad1.right_stick_y);
+        frontRight.setPower(-gamepad1.right_stick_y);
         backLeft.setPower(gamepad1.left_stick_y);
-        backRight.setPower(gamepad1.right_stick_y);
+        backRight.setPower(-gamepad1.right_stick_y);
+        telemetry.update();
     }
 
     @Override
     public void beginTranslation(Distance distance, double speed) {
-        frontLeft.setTargetPosition(frontLeft.getCurrentPosition() + distance.toEncoderTicks());
+        frontLeft.setTargetPosition(frontLeft.getCurrentPosition() - distance.toEncoderTicks());
         frontRight.setTargetPosition(frontRight.getCurrentPosition() + distance.toEncoderTicks());
+        backLeft.setTargetPosition(backLeft.getCurrentPosition() - distance.toEncoderTicks());
+        backRight.setTargetPosition(backRight.getCurrentPosition() + distance.toEncoderTicks());
+
+        frontLeft.setPower(-speed);
+        frontRight.setPower(speed);
+        backLeft.setPower(-speed);
+        backRight.setPower(speed);
+    }
+
+    @Override
+    public void beginTranslationSide(Distance distance, double speed) {
+        frontLeft.setTargetPosition(frontLeft.getCurrentPosition() - distance.toEncoderTicks());
+        frontRight.setTargetPosition(frontRight.getCurrentPosition() - distance.toEncoderTicks());
         backLeft.setTargetPosition(backLeft.getCurrentPosition() + distance.toEncoderTicks());
         backRight.setTargetPosition(backRight.getCurrentPosition() + distance.toEncoderTicks());
 
@@ -79,11 +93,12 @@ public class TankDrive extends Drive {
         backRight.setPower(speed);
     }
 
+    @Override
     public void beginRotation(Angle angle, double speed) {
         frontLeft.setTargetPosition(frontLeft.getCurrentPosition() - angle.toEncoderTicks()); // Note negative
-        frontRight.setTargetPosition(frontRight.getCurrentPosition() + angle.toEncoderTicks());
+        frontRight.setTargetPosition(frontRight.getCurrentPosition() - angle.toEncoderTicks());
         backLeft.setTargetPosition(backLeft.getCurrentPosition() - angle.toEncoderTicks());   // Note negative
-        backRight.setTargetPosition(backRight.getCurrentPosition() + angle.toEncoderTicks());
+        backRight.setTargetPosition(backRight.getCurrentPosition() - angle.toEncoderTicks());
 
         frontLeft.setPower(speed);
         frontRight.setPower(speed);

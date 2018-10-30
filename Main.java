@@ -31,6 +31,13 @@ public class Main extends OpMode {
     }
 
     @Override
+    public void init_loop() {
+        for (OpMode assembly : assemblies) {                      // Start All Registered Assemblies in the Array
+            assembly.init_loop();
+        }
+    }
+
+    @Override
     public void start() {
         for (OpMode assembly : assemblies) {                      // Start All Registered Assemblies in the Array
             assembly.start();
@@ -43,6 +50,8 @@ public class Main extends OpMode {
             assembly.gamepad1 = gamepad1;
             assembly.gamepad2 = gamepad2;
             assembly.loop();
+
+
         }
     }
 
