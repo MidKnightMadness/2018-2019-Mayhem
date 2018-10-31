@@ -51,12 +51,13 @@ public final class AssemblyManager {
             try {
                 t.getClass().getMethod("init").invoke(t);
             } catch (Exception e) {
-                throw new Error("Failed to initialize", e);
+                telemetry.addLine("ERROR: UNABLE TO INIT");
             }
 
             return t;
         } catch (Exception e) {
-            throw new Error("Unable to find implementation of " + clazz.getSimpleName(), e);
+            telemetry.addLine("ERROR: Unable to find implementation of " + clazz.getSimpleName());
+            return null;
         }
     }
 }

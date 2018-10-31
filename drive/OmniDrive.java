@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.drive;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -15,10 +16,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.teamcode.common.Angle;
 import org.firstinspires.ftc.teamcode.common.Config;
+import org.firstinspires.ftc.teamcode.common.Distance;
 
-public class OmniDrive extends OpMode {
-
-    private Telemetry telemetry;
+@TeleOp
+public class OmniDrive extends Drive {
 
     private BNO055IMU imu;
 
@@ -68,6 +69,41 @@ public class OmniDrive extends OpMode {
         motorLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         resetHeading();
+    }
+
+    @Override
+    public void beginTranslation(Distance distance, double speed) {
+
+    }
+
+    @Override
+    public void beginTranslationSide(Distance distance, double speed) {
+
+    }
+
+    @Override
+    public void beginRotation(Angle rotation, double speed) {
+
+    }
+
+    @Override
+    public void beginMovement(Distance distance, Angle rotation, double speed) throws InterruptedException {
+
+    }
+
+    @Override
+    public void backward() {
+
+    }
+
+    @Override
+    public void stopBack() {
+
+    }
+
+    @Override
+    public boolean isBusy() {
+        return false;
     }
 
     private void resetHeading() {

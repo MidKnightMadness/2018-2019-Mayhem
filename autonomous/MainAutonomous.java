@@ -1,8 +1,12 @@
 package org.firstinspires.ftc.teamcode.autonomous;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.RobotLog;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.common.AssemblyManager;
 import org.firstinspires.ftc.teamcode.common.Config;
 import org.firstinspires.ftc.teamcode.common.Distance;
@@ -33,19 +37,29 @@ import org.firstinspires.ftc.teamcode.visual.Visual;
 public class MainAutonomous extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {   // This method is run by the OpMode Manager on init until the stop button is pressed.
-        //Drive d = AssemblyManager.newInstance(Drive.class, hardwareMap, telemetry); // Initialize all Assemblies required during the Autonomous program by the interface
+        Drive d = AssemblyManager.newInstance(Drive.class, hardwareMap, telemetry); // Initialize all Assemblies required during the Autonomous program by the interface
         //Visual v = AssemblyManager.newInstance(Visual.class, hardwareMap, telemetry);
+        RobotLog.a("STARTING!\n\n\n\n\n\n\n\n");
+        Log.d("STARTING!!!", "\n\n\n\n\n\n\n\n\n");
         PullUp p = AssemblyManager.newInstance(PullUp.class, hardwareMap, telemetry);
         //Hand h = AssemblyManager.newInstance(Hand.class, hardwareMap, telemetry);
         //MineralArm m = AssemblyManager.newInstance(MineralArm.class, hardwareMap, telemetry);
 
 
-        waitForStart();                                               // Wait for Start Button
+        waitForStart();
+        d.backward();// Wait for Start Button
         p.lower(); // Lower bot from hanging position
-        Thread.sleep(4000);
+        Thread.sleep(1000);
+        telemetry.addLine("LOWERED");
+        d.stopBack();
+        d.beginTranslationSide(Distance.fromInches(-20),1);
+        while (d.isBusy() && !isStopRequested()) {}
+        telemetry.addLine("MOVED 2");
+        Thread.sleep(1000);
         p.raise();
-        /*d.beginTranslationSide(Distance.fromInches(-4),1);
-        d.beginTranslation(Distance.fromInches(15),1);
+        telemetry.addLine("RAISE");
+        Thread.sleep(1000);
+        /*d.beginTranslation(Distance.fromInches(15),1);
         d.beginTranslationSide(Distance.fromInches(17),1);*/
 
 

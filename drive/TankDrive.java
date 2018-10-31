@@ -55,15 +55,45 @@ public class TankDrive extends Drive {
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+    public void backward() {
+        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        frontLeft.setPower(1);
+        frontRight.setPower(-1);
+        backLeft.setPower(1);
+        backRight.setPower(-1);
+    }
+
+    public void stopBack() {
+        frontLeft.setPower(0);
+        frontRight.setPower(0);
+        backLeft.setPower(0);
+        backRight.setPower(0);
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
 
     @Override
     public void loop() {
         telemetry.addData("RIGHT", gamepad1.right_stick_y);
         telemetry.addData("LEFT", gamepad1.left_stick_y);
-        frontLeft.setPower(gamepad1.left_stick_y);
-        frontRight.setPower(-gamepad1.right_stick_y);
-        backLeft.setPower(gamepad1.left_stick_y);
-        backRight.setPower(-gamepad1.right_stick_y);
+        if (gamepad1.x) {
+            frontLeft.setPower(gamepad1.right_stick_y);
+            frontRight.setPower(gamepad1.right_stick_y);
+            backLeft.setPower(-gamepad1.left_stick_y);
+            backRight.setPower(-gamepad1.left_stick_y);
+        } else {
+            frontLeft.setPower(gamepad1.left_stick_y);
+            frontRight.setPower(-gamepad1.right_stick_y);
+            backLeft.setPower(gamepad1.left_stick_y);
+            backRight.setPower(-gamepad1.right_stick_y);
+        }
+
         telemetry.update();
     }
 

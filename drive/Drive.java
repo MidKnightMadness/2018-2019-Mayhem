@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.common.Angle;
  */
 
 @Implementation(TankDrive.class)
-@TeleOpImplementation(OmniDrive.class)
+//@TeleOpImplementation(OmniDrive.class)
 public abstract class Drive extends OpMode {
     public abstract void init(); // Initialize Motors
 
@@ -26,6 +26,9 @@ public abstract class Drive extends OpMode {
     public abstract void beginTranslationSide(Distance distance, double speed);
     public abstract void beginRotation(Angle rotation, double speed);
     public abstract void beginMovement(Distance distance, Angle rotation, double speed) throws InterruptedException;
+    public abstract void backward();
+    public abstract void stopBack();
+
     public abstract boolean isBusy();
 }
 

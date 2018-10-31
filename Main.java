@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.common.AssemblyManager;
 import org.firstinspires.ftc.teamcode.common.Config;
 import org.firstinspires.ftc.teamcode.drive.Drive;
+import org.firstinspires.ftc.teamcode.pullup.PullUp;
 
 /**
  * Main TeleOp for Tournament
@@ -23,11 +24,12 @@ import org.firstinspires.ftc.teamcode.drive.Drive;
 @TeleOp(name = "Main Robot", group = "Main")
 public class Main extends OpMode {
 
-    private OpMode[] assemblies = new OpMode[1];                  // Increase the size of the array for the amount of Assemblies
+    private OpMode[] assemblies = new OpMode[2];                  // Increase the size of the array for the amount of Assemblies
 
     @Override
     public void init() {
         assemblies[0] = AssemblyManager.newInstance(Drive.class, hardwareMap, telemetry, true); // Initialize all OpModes independently
+        assemblies[1] = AssemblyManager.newInstance(PullUp.class, hardwareMap, telemetry, true);
     }
 
     @Override
@@ -50,8 +52,6 @@ public class Main extends OpMode {
             assembly.gamepad1 = gamepad1;
             assembly.gamepad2 = gamepad2;
             assembly.loop();
-
-
         }
     }
 
