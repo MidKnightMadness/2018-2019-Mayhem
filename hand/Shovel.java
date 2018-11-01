@@ -36,13 +36,13 @@ public class Shovel extends Hand {
 
     public void loop() {
 
-        if(gamepad2.dpad_left){
+        if(gamepad1.dpad_left){
             //pos -= 0.005;
             tiltHand(TILT_LEFT);
-        } else if(gamepad2.dpad_right){
+        } else if(gamepad1.dpad_right){
             //pos += 0.005;
             tiltHand(TILT_RIGHT);
-        } else if(gamepad2.dpad_down) {
+        } else if(gamepad1.dpad_down) {
             tiltHand(TILT_CENTER);
         }
         
