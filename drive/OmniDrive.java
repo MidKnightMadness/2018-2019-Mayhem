@@ -131,14 +131,20 @@ public class OmniDrive extends Drive {
             double rotateScale = Math.pow(Math.abs(adjustedR), 5) * Math.signum(-adjustedR) * (1 - Math.abs(translateScale)) * (slow ? 0.5 : 1);
 
             telemetry.addData("AdjustedR", adjustedR);
-            telemetry.addData("Theta", theta);
+            telemetry.addData("Theta", theta.toDegrees());
+            telemetry.addData("Target Direction", targetDirection.toDegrees());
 
             telemetry.addData("Rotate Scale", rotateScale);
-            targetDirection = targetDirection.add(theta);
-            tempMotors[0] = Math.cos(targetDirection.add(theta).getRadians());
-            tempMotors[1] = -Math.cos(targetDirection.add(theta).getRadians());
-            tempMotors[2] = Math.sin(targetDirection.add (theta).getRadians());
-            tempMotors[3] = -Math.sin(targetDirection.add(theta).getRadians());
+            targetDirection.add(theta);
+            telemetry.addData("Target Direction", targetDirection.toDegrees());
+            telemetry.addData("Motor 0", Math.cos(targetDirection.getRadians()));
+            telemetry.addData("Motor 1", -Math.cos(targetDirection.getRadians()));
+            telemetry.addData("Motor 2", Math.sin(targetDirection.getRadians()));
+            telemetry.addData("Motor 3", -Math.sin(targetDirection.getRadians()));
+            tempMotors[2] = -Math.cos(targetDirection.getRadians());
+            tempMotors[3] = Math.cos(targetDirection.getRadians());
+            tempMotors[0] = -Math.sin(targetDirection.getRadians());
+            tempMotors[1] = Math.sin(targetDirection.getRadians());
 
             double scale = Math.max(Math.max(Math.abs(tempMotors[0]), Math.abs(tempMotors[1])), Math.max(Math.abs(tempMotors[2]), Math.abs(tempMotors[3])));
             if (scale == 0) {
