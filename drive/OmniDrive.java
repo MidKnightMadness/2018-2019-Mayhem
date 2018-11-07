@@ -38,6 +38,7 @@ public class OmniDrive extends Drive {
     private double adjustedR = 0;
     private double lastKnownRotation = 0;
     private boolean resettingRotation = false;
+    private final int BASE_ROTATION_ANGLE = 45;
 
 
     private Angle getIMURotation() {
@@ -107,8 +108,7 @@ public class OmniDrive extends Drive {
     }
 
     private void resetHeading() {
-        startPos = getIMURotation();
-        //startPos = getIMURotation() - BASE_ROTATION_ANGLE;
+        startPos = getIMURotation().subtract(Angle.fromDegrees(BASE_ROTATION_ANGLE));
     }
 
     private void targPow(DcMotor motor, double speed) {
@@ -168,7 +168,6 @@ public class OmniDrive extends Drive {
             targPow(motorLeft, tempMotors[2]);
             targPow(motorRight, tempMotors[3]);
 
-            telemetry.update();
         }
     }
 

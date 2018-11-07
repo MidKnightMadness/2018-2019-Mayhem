@@ -52,6 +52,8 @@ public final class AssemblyManager {
                 t.getClass().getMethod("init").invoke(t);
             } catch (Exception e) {
                 telemetry.addLine("ERROR: UNABLE TO INIT");
+                telemetry.addLine(t.getClass().getSimpleName());
+                telemetry.addLine(e.getMessage());
             }
 
             return t;

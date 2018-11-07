@@ -48,7 +48,7 @@ public class MainAutonomous extends LinearOpMode {
 
         waitForStart();
         d.backward();// Wait for Start Button
-        p.lower(); // Lower bot from hanging position
+        p.open(); // Lower bot from hanging position
         Thread.sleep(1000);
         telemetry.addLine("LOWERED");
         d.stopBack();
@@ -56,7 +56,7 @@ public class MainAutonomous extends LinearOpMode {
         while (d.isBusy() && !isStopRequested()) {}
         telemetry.addLine("MOVED 2");
         Thread.sleep(1000);
-        p.raise();
+        p.close();
         telemetry.addLine("RAISE");
         Thread.sleep(1000);
         /*d.beginTranslation(Distance.fromInches(15),1);

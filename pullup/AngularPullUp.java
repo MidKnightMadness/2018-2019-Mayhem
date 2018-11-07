@@ -33,7 +33,7 @@ public class AngularPullUp extends PullUp {
 
     }
 
-    public void lower() throws InterruptedException{
+    public void open() throws InterruptedException{
         pullUpMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         pullUpMotor.setPower(-1);
         pullUpServo.setPosition(1);
@@ -44,10 +44,10 @@ public class AngularPullUp extends PullUp {
         while (pullUpMotor.isBusy() && !Thread.currentThread().isInterrupted()){}
     }
 
-    public void raise() throws InterruptedException {
+    public void close() throws InterruptedException {
         pullUpMotor.setTargetPosition(0);
         pullUpMotor.setPower(1);
-        while (pullUpMotor.isBusy() && !Thread.currentThread().isInterrupted()) { }
+        while (pullUpMotor.isBusy() && !Thread.currentThread().isInterrupted()) {}
         pullUpMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         pullUpMotor.setPower(-1);
         Thread.sleep(500);
@@ -57,49 +57,66 @@ public class AngularPullUp extends PullUp {
         pullUpMotor.setTargetPosition(0);
     }
 
-    private int state = 0;
+    private enum State {
+        OPENED,
+        OPENING,
+        CLOSING,
+        CLOSED;
+
+        @Override
+        public String toString() {
+            return this == OPENED ? "OPENED" : this == OPENING ? "OPENING" : this == CLOSED ? "CLOSED" : "CLOSING";
+        }
+    }
+    private State state = State.CLOSED;
     private int subState = 0;
-    private int waitUntil = 0;
+
     private ElapsedTime timer = new ElapsedTime();
     @Override
     public void loop() {
-        if (state == 1) {
+        telemetry.addData("State", state.toString());
+        telemetry.addData("Sub State", subState);
+        if (state == State.CLOSING) {
             if (subState == 0) {
-                if (!pullUpMotor.isBusy()) {
-                    pullUpMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                    pullUpMotor.setPower(-1);
-                    timer.reset();
-                    subState = 1;
-                }
-            } else if (subState == 1 && timer.milliseconds() < 500) {
-                pullUpServo.setPosition(0);
-                subState = 2;
+                pullUpMotor.setTargetPosition(0);
+                pullUpMotor.setPower(1);
+                subState = 1;
+            } else if (subState == 1 && !pullUpMotor.isBusy()) {
+                pullUpMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                pullUpMotor.setPower(-1);
                 timer.reset();
-            } else if (subState == 2 && timer.milliseconds() < 1000) {
+                subState = 2;
+            } else if (subState == 2 && timer.milliseconds() < 500) {
+                pullUpServo.setPosition(0);
+                subState = 3;
+                timer.reset();
+            } else if (subState == 3 && timer.milliseconds() < 1000) {
+                pullUpMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 pullUpMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 pullUpMotor.setTargetPosition(0);
-                state = 0;
+                state = State.CLOSED;
             }
-        } else if (state == 2) {
-            if (subState == 0 && timer.milliseconds() < 1000) {
+        } else if (state == State.OPENING) {
+            if (subState == 0) {
+                pullUpMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                pullUpMotor.setPower(-1);
+                pullUpServo.setPosition(1);
+                subState = 1;
+                timer.reset();
+            } else if (subState == 1 && timer.milliseconds() < 1000) {
                 pullUpMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 pullUpMotor.setTargetPosition(TARGET_POSITION_TO_OPEN);
                 pullUpMotor.setPower(1);
-            } else if (subState == 1 && !pullUpMotor.isBusy()) {
-                state = 0;
+                subState = 2;
+            } else if (subState == 2 && !pullUpMotor.isBusy()) {
+                state = State.OPENED;
             }
-        } else if (gamepad1.dpad_up && state == 0) {
-            pullUpMotor.setTargetPosition(0);
-            pullUpMotor.setPower(1);
-            state = 1;
+        } else if (gamepad1.dpad_down && state == State.CLOSED) {
+            state = State.OPENING;
             subState = 0;
-        } else if (gamepad1.dpad_down && state == 0) {
-            pullUpMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            pullUpMotor.setPower(-1);
-            pullUpServo.setPosition(1);
-            state = 2;
+        } else if (gamepad1.dpad_up && state == State.OPENED) {
+            state = State.CLOSING;
             subState = 0;
-            timer.reset();
         }
     }
 }

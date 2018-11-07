@@ -16,7 +16,7 @@ public class Reset extends LinearOpMode {
 
 
         waitForStart();                                               // Wait for Start Button
-        p.raise(); // Lower bot from hanging position
+        p.close(); // Lower bot from hanging position
         Thread.sleep(4000);
     }
 }
