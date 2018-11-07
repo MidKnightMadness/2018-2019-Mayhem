@@ -17,6 +17,10 @@ public class Distance {
     public static Distance fromInches(double inches) {
         return new Distance((int) (inches * Config.Measurements.ENCODER_TICKS_PER_INCH));
     }
+    public Distance subtract(Distance subtractend) {
+        encoderTicks -= subtractend.encoderTicks;
+        return this;
+    }
     public double toRotations() {
         return encoderTicks / 396000.0d;
     }

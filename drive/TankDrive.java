@@ -19,7 +19,7 @@ public class TankDrive extends Drive {
 
     // Declare Motors
     // DO NOT assign them to anything yet because hardwareMap is not necessarily defined until init runs.
-    public DcMotor frontLeft;
+    //public DcMotor frontLeft;
     public DcMotor frontRight;
     public DcMotor backLeft;
     public DcMotor backRight;
@@ -75,6 +75,12 @@ public class TankDrive extends Drive {
         frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    public int[] currentPos(){
+        int[] a = {frontLeft.getCurrentPosition(), frontRight.getCurrentPosition(),
+                backRight.getCurrentPosition(), backLeft.getCurrentPosition()};
+        return a;
     }
 
 

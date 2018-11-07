@@ -22,7 +22,7 @@ public abstract class Visual extends OpMode {
             return this == LEFT ? "Left" : this == CENTER ? "Center" : this == RIGHT ? "Right" : "Unknown";
         }
     }
-    static boolean DEBUG = true;
+    static boolean DEBUG = false;
 
     public static double minYellow[] = {20, 0.5, 0.3};
     public static double maxYellow[] = {62, 1, 1};
@@ -32,6 +32,7 @@ public abstract class Visual extends OpMode {
 
 
     public abstract void init();
+    // 1 = Gold, 0 = Silver, -1 = Unknown
     public abstract int isGoldMineral(boolean save) throws InterruptedException;
     public abstract int isGoldMineral(boolean save, int print_x, int print_y) throws InterruptedException;
     public abstract void stop();

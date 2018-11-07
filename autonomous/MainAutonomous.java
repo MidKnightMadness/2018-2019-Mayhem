@@ -38,10 +38,10 @@ public class MainAutonomous extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {   // This method is run by the OpMode Manager on init until the stop button is pressed.
         Drive d = AssemblyManager.newInstance(Drive.class, hardwareMap, telemetry); // Initialize all Assemblies required during the Autonomous program by the interface
-        //Visual v = AssemblyManager.newInstance(Visual.class, hardwareMap, telemetry);
+        Visual v = AssemblyManager.newInstance(Visual.class, hardwareMap, telemetry);
         RobotLog.a("STARTING!\n\n\n\n\n\n\n\n");
         Log.d("STARTING!!!", "\n\n\n\n\n\n\n\n\n");
-        PullUp p = AssemblyManager.newInstance(PullUp.class, hardwareMap, telemetry);
+        final PullUp p = AssemblyManager.newInstance(PullUp.class, hardwareMap, telemetry);
         //Hand h = AssemblyManager.newInstance(Hand.class, hardwareMap, telemetry);
         //MineralArm m = AssemblyManager.newInstance(MineralArm.class, hardwareMap, telemetry);
 
@@ -52,17 +52,57 @@ public class MainAutonomous extends LinearOpMode {
         Thread.sleep(1000);
         telemetry.addLine("LOWERED");
         d.stopBack();
-        d.beginTranslationSide(Distance.fromInches(-20),1);
+        d.beginTranslationSide(Distance.fromInches(-5),1);
         while (d.isBusy() && !isStopRequested()) {}
         telemetry.addLine("MOVED 2");
         Thread.sleep(1000);
-        p.close();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    p.close();
+                } catch (InterruptedException e) {
+                    telemetry.addLine(e.getMessage());
+                }
+            }
+        }).start();
         telemetry.addLine("RAISE");
+        telemetry.update();
         Thread.sleep(1000);
         /*d.beginTranslation(Distance.fromInches(15),1);
         d.beginTranslationSide(Distance.fromInches(17),1);*/
+        d.beginTranslation(Distance.fromInches(14), 1);
+        telemetry.addLine("MOVE UP");
+        telemetry.update();
+        Thread.sleep(1000);
+        d.beginTranslationSide(Distance.fromInches(-16), 1);
+        telemetry.addLine("MOVE LEFT");
+        Thread.sleep(1000);
+        d.beginTranslationSide(Distance.fromInches(40), 0.2);
+        int IS_GOLD = 0;
+        int GOLD_FOUND = 0;
+        int encoder = 0;
 
-
+        while (d.isBusy()){
+            IS_GOLD = v.isGoldMineral(false);
+            telemetry.addData("Is Gold? ", IS_GOLD);
+            if((GOLD_FOUND == 0) && (IS_GOLD == 1)){
+                GOLD_FOUND = 1;
+                //encoder = d.frontLeft.getCurrentPosition();
+            } else if ((GOLD_FOUND == 1) && (IS_GOLD == 0)){
+                GOLD_FOUND = -1;
+                //encoder = d.frontLeft.getCurrentPosition() - encoder;
+                d.stopBack();
+                break;
+            }
+            telemetry.addData("Gold Status ", GOLD_FOUND);
+            telemetry.addData("Encoder Position", encoder);
+        }
+        d.beginTranslationSide(Distance.fromEncoderTicks(400), 0.5);
+        while (!isStopRequested() && d.isBusy());
+        d.beginTranslation(Distance.fromInches(18), 0.2);
+        while (!isStopRequested() && d.isBusy());
+        telemetry.update();
 
 
     }

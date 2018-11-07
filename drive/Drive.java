@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.common.AssemblyManager.TeleOpImplementation;
 import org.firstinspires.ftc.teamcode.common.AssemblyManager.Implementation;
@@ -19,6 +20,7 @@ import org.firstinspires.ftc.teamcode.common.Angle;
 @Implementation(TankDrive.class)
 @TeleOpImplementation(OmniDrive.class)
 public abstract class Drive extends OpMode {
+    public DcMotor frontLeft;
     public abstract void init(); // Initialize Motors
 
     // Begin moving forward or backwards

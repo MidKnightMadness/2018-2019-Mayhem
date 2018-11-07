@@ -41,7 +41,7 @@ public class VisualImpl extends Visual {
     @Override
     public void init() {
         telemetry.addLine("Initializing");
-        telemetry.addData("Debug", DEBUG);
+        telemetry.addData("Debug", Visual.DEBUG);
         telemetry.update();
         // Init the VuforiaLocalizer parameters object with the camera View ID
         VuforiaLocalizer.Parameters params = new VuforiaLocalizer.Parameters(); // to see the view, add com.qualcomm.ftcrobotcontroller.R.id.cameraMonitorViewId as param

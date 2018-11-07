@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.common.Config;
 
 public class AngularPullUp extends PullUp {
-    private DcMotor pullUpMotor;
+    public DcMotor pullUpMotor;
     private Servo pullUpServo;
     private double POWER_TO_OPEN_PULLUP = 1;
     private final int TARGET_POSITION_TO_OPEN = 11000;
