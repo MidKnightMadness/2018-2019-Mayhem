@@ -11,6 +11,7 @@ public class AngularPullUp extends PullUp {
     private Servo pullUpServo;
     private double POWER_TO_OPEN_PULLUP = 1;
     private final int TARGET_POSITION_TO_OPEN = 11000;
+    private Servo tempServo;
 
 
 
@@ -30,6 +31,8 @@ public class AngularPullUp extends PullUp {
         pullUpMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         pullUpMotor.setTargetPosition(0);
 
+        tempServo = hardwareMap.servo.get("Temp Servo");
+        tempServo.setPosition(1);
 
     }
 
@@ -38,15 +41,18 @@ public class AngularPullUp extends PullUp {
         pullUpMotor.setPower(-1);
         pullUpServo.setPosition(1);
         Thread.sleep(1000);
-        pullUpMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        pullUpMotor.setTargetPosition(TARGET_POSITION_TO_OPEN);
-        pullUpMotor.setPower(1);
-        while (pullUpMotor.isBusy() && !Thread.currentThread().isInterrupted()){}
+        pullUpMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        pullUpMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        pullUpMotor.setPower(0.8);
+        while (pullUpMotor.getCurrentPosition() < TARGET_POSITION_TO_OPEN && !Thread.currentThread().isInterrupted()){}
+        pullUpMotor.setPower(0);
     }
 
     public void close() throws InterruptedException {
-        pullUpMotor.setTargetPosition(0);
+        pullUpMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        pullUpMotor.setTargetPosition(100);
         pullUpMotor.setPower(1);
+        tempServo.setPosition(0);
         while (pullUpMotor.isBusy() && !Thread.currentThread().isInterrupted()) {}
         pullUpMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         pullUpMotor.setPower(-1);
@@ -55,6 +61,7 @@ public class AngularPullUp extends PullUp {
         Thread.sleep(1000);
         pullUpMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         pullUpMotor.setTargetPosition(0);
+
     }
 
     private enum State {
