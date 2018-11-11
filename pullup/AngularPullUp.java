@@ -17,6 +17,7 @@ public class AngularPullUp extends PullUp {
 
     @Override
     public void init() {
+
         pullUpMotor = hardwareMap.dcMotor.get(Config.PullUp.PULLUP_MOTOR);
         pullUpServo = hardwareMap.servo.get(Config.PullUp.PULLUP_SERVO);
         pullUpMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
