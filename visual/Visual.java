@@ -22,7 +22,7 @@ public abstract class Visual extends OpMode {
             return this == LEFT ? "Left" : this == CENTER ? "Center" : this == RIGHT ? "Right" : "Unknown";
         }
     }
-    static boolean DEBUG = false;
+    public static boolean DEBUG = false;
 
     public static double minYellow[] = {20, 0.5, 0.3};
     public static double maxYellow[] = {62, 1, 1};
