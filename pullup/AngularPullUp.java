@@ -1,11 +1,14 @@
 package org.firstinspires.ftc.teamcode.pullup;
 
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.common.Config;
 
+@TeleOp
 public class AngularPullUp extends PullUp {
     public DcMotor pullUpMotor;
     private Servo pullUpServo;
@@ -29,7 +32,6 @@ public class AngularPullUp extends PullUp {
         pullUpMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         pullUpMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         pullUpMotor.setTargetPosition(0);
-
 
     }
 
