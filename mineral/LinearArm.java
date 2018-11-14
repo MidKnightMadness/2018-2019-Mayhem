@@ -27,11 +27,11 @@ public class LinearArm extends MineralArm {
         extendMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         extendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rotateMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rotateMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rotateMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         //rotateMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(15, 0, 1, 0, MotorControlAlgorithm.PIDF));
         //rotateMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION,   new PIDFCoefficients(15, 0, 0,0, MotorControlAlgorithm.PIDF));
-        rotateMotor.setTargetPosition(0);
-        rotateMotor.setPower(1);
+        //rotateMotor.setTargetPosition(0);
+        //rotateMotor.setPower(1);
         extendMotor.setTargetPosition(0);
         extendMotor.setPower(1);
     }
@@ -42,9 +42,9 @@ public class LinearArm extends MineralArm {
     @Override
     public void loop() {
         if (gamepad1.left_bumper) {
-            currentAngle -= 1;
+            currentAngle -= 10;
         } else if (gamepad1.right_bumper){
-            currentAngle += 1;
+            currentAngle += 10;
         }
 
         if (gamepad1.left_trigger > 0) {
@@ -56,12 +56,29 @@ public class LinearArm extends MineralArm {
         extension = Math.min(Math.max(extension, 0), TARGET_POSITION_TO_EXTEND);
 
         extendMotor.setTargetPosition(extension);
-
+        updateRotate();
         telemetry.addData("Current Angle", currentAngle);
         telemetry.addData("Extension", extension);
         telemetry.update();
-        rotateMotor.setTargetPosition(currentAngle);
+
+        //rotateMotor.setTargetPosition(currentAngle);
     }
+
+    public void updateRotate() {
+        double power = currentAngle - rotateMotor.getCurrentPosition();
+        if (Math.abs(power) < 20) {
+            power = 0;
+        } else if (Math.abs(power) < 100) {
+            power = Math.signum(power) * 0.02;
+        } else {
+            power = Math.min(Math.max(Math.pow(power / 20.0, 7),-0.5), 0.5);
+        }
+
+        telemetry.addData("Power", power);
+
+        rotateMotor.setPower(power);
+    }
+
 
     @Override
     public void extend() throws InterruptedException {
