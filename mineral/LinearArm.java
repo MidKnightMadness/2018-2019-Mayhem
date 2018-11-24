@@ -53,7 +53,7 @@ public class LinearArm extends MineralArm {
             extension -= gamepad1.right_trigger * 20;
         }
 
-        extension = Math.min(Math.max(extension, 0), TARGET_POSITION_TO_EXTEND);
+        extension = Math.min(Math.max(extension, -1000000), 100000000);
 
         extendMotor.setTargetPosition(extension);
         updateRotate();

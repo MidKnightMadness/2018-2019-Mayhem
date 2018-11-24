@@ -10,10 +10,11 @@ package org.firstinspires.ftc.teamcode.common;
 
 public final class Config {
     public static final class Drive {     // Drive Assembly Configuration
-        public static final String FRONT_LEFT = "front left"; // 0
-        public static final String BACK_RIGHT = "back right"; // 2
-        public static final String BACK_LEFT = "back left"; // 3
-        public static final String FRONT_RIGHT = "front right"; // 1
+        public static final String FRONT_LEFT = "front left";   // Hub 2: 0
+        public static final String FRONT_RIGHT = "front right"; // Hub 2: 1
+        public static final String BACK_RIGHT = "back right";   // Hub 2: 2
+        public static final String BACK_LEFT = "back left";     // Hub 2: 3
+                                                        // "imu"   Hub 2: I2C Bus 0: 0
     }
 
     public static final class Hand {     // Hand Assembly Configuration
@@ -22,15 +23,14 @@ public final class Config {
     }
 
     public static final class PullUp {     // Pull-up Assembly Configuration
-        public static final String PULLUP_MOTOR = "pull up motor"; //
-        public static final String PULLUP_SERVO = "pull up servo";
+        public static final String PULLUP_MOTOR = "pull up motor"; // Hub 1: 2
+        public static final String PULLUP_SERVO = "pull up servo"; // Hub 2: 0
 
     }
 
     public static final class MineralArm {      // Mineral Arm Assembly Configuration
-        public static final String MINERAL_EXTEND_MOTOR = "mineral extending motor";
-        public static final String MINERAL_ROTATE_MOTOR = "mineral rotating motor";
-
+        public static final String MINERAL_EXTEND_MOTOR = "mineral extending motor"; // Hub 1: 1
+        public static final String MINERAL_ROTATE_MOTOR = "mineral rotating motor";  // Hub 1: 0
 
     }
 
