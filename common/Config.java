@@ -35,7 +35,7 @@ public final class Config {
     }
 
     public static final class Measurements {
-        public static final double ROBOT_DEGREES_PER_TICK = 0.04939d;
+        public static final double ROBOT_DEGREES_PER_TICK = 0.060857d;
         public static final double ENCODER_TICKS_PER_INCH = 5000d/68d;
         public static final int ENCODER_TICKS_PER_SHAFT_DEGREE = 1100;
     }

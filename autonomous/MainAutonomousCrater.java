@@ -37,14 +37,17 @@ import org.firstinspires.ftc.teamcode.visual.Visual;
 
 
 @Autonomous                                                 // Comment out annotation to remove from list on Driver Station
-public class MainAutonomous extends LinearOpMode {
+public class MainAutonomousCrater extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {   // This method is run by the OpMode Manager on init until the stop button is pressed.
+        telemetry.addLine("HI IM ALIVE");
+        telemetry.update();
+
         Drive d = AssemblyManager.newInstance(Drive.class, hardwareMap, telemetry); // Initialize all Assemblies required during the Autonomous program by the interface
         Visual v = AssemblyManager.newInstance(Visual.class, hardwareMap, telemetry);
+        final PullUp p = AssemblyManager.newInstance(PullUp.class, hardwareMap, telemetry);
         RobotLog.a("STARTING!\n\n\n\n\n\n\n\n");
         Log.d("STARTING!!!", "\n\n\n\n\n\n\n\n\n");
-        final PullUp p = AssemblyManager.newInstance(PullUp.class, hardwareMap, telemetry);
         //Hand h = AssemblyManager.newInstance(Hand.class, hardwareMap, telemetry);
         //MineralArm m = AssemblyManager.newInstance(MineralArm.class, hardwareMap, telemetry);
 

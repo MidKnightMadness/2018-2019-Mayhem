@@ -41,7 +41,7 @@ public class RotationTest extends LinearOpMode {
             }
         });
 
-        waitForStart();/*
+        waitForStart();
         t.frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         t.frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         t.backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -57,10 +57,10 @@ public class RotationTest extends LinearOpMode {
 
             telemetry.clear();
             telemetry.update();
-        }*/
+        }
 
         //Thread.sleep(5000);
-        t.beginRotation(Angle.fromDegrees(90), 1.0);
+        //t.beginRotation(Angle.fromDegrees(90), 1.0);
         while (t.isBusy() && !isStopRequested());
 
     }
