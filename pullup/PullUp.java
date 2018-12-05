@@ -9,4 +9,5 @@ import org.firstinspires.ftc.teamcode.common.AssemblyManager;
 public abstract class PullUp extends OpMode {
     public abstract void open() throws InterruptedException;
     public abstract void close() throws InterruptedException;
+    public abstract void reset();
 }

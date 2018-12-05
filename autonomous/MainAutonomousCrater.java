@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.common.Angle;
 import org.firstinspires.ftc.teamcode.common.AssemblyManager;
 import org.firstinspires.ftc.teamcode.common.Config;
 import org.firstinspires.ftc.teamcode.common.Distance;
@@ -49,20 +50,30 @@ public class MainAutonomousCrater extends LinearOpMode {
         RobotLog.a("STARTING!\n\n\n\n\n\n\n\n");
         Log.d("STARTING!!!", "\n\n\n\n\n\n\n\n\n");
         //Hand h = AssemblyManager.newInstance(Hand.class, hardwareMap, telemetry);
-        //MineralArm m = AssemblyManager.newInstance(MineralArm.class, hardwareMap, telemetry);
-
+        MineralArm m = AssemblyManager.newInstance(MineralArm.class, hardwareMap, telemetry);
 
         waitForStart();
         p.open(); // Lower bot from hanging position
         d.backward();// Wait for Start Button
-        Thread.sleep(500);
+        Thread.sleep(200);
         telemetry.addLine("LOWERED");
+        telemetry.update();
         d.stopBack();
-        Thread.sleep(100);
-        d.beginTranslationSide(Distance.fromInches(-5),1);
-        while (d.isBusy() && !isStopRequested()) {}
+        telemetry.addLine("LOWERED2");
+        telemetry.update();
+        Thread.sleep(500);
+        telemetry.addLine("LOWERED3");
+        telemetry.update();
+        d.beginTranslationSide(Distance.fromInches(-4),0.5);
+        telemetry.addLine("LOWERED4");
+        telemetry.update();
+        while (d.isBusy() && !isStopRequested()) {
+            telemetry.update();
+        }
+        telemetry.addData("Stop", isStopRequested());
+        telemetry.update();
         telemetry.addLine("MOVED 2");
-        Thread.sleep(1000);
+        Thread.sleep(100);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -77,28 +88,32 @@ public class MainAutonomousCrater extends LinearOpMode {
         telemetry.update();
         /*d.beginTranslation(Distance.fromInches(15),1);
         d.beginTranslationSide(Distance.fromInches(17),1);*/
-        d.beginTranslation(Distance.fromInches(14), 1);
+        d.beginTranslation(Distance.fromInches(14), 0.4);
         telemetry.addLine("MOVE UP");
         telemetry.update();
         Thread.sleep(1000);
-        d.beginTranslationSide(Distance.fromInches(-16), 1);
+        d.beginTranslationSide(Distance.fromInches(-16), 0.4);
         telemetry.addLine("MOVE LEFT");
+        telemetry.update();
+        Thread.sleep(1000);
+        d.beginRotation(Angle.fromDegrees(-90), 1);
+        telemetry.addLine("ROTATE");
         telemetry.update();
         Thread.sleep(1000);
         int IS_GOLD = 0;
         int GOLD_FOUND = 0;
         int encoder = 0;
-        d.beginTranslationSide(Distance.fromInches(40), 0.2);
+        d.beginTranslation(Distance.fromInches(-50), 0.2);
         telemetry.addLine("MOVING ALONG MINERALS");
         telemetry.update();
 
         while (d.isBusy()){
-            IS_GOLD = v.isGoldMineral(false);
+            IS_GOLD = v.isGoldMineral(true);
             telemetry.addData("Is Gold? ", IS_GOLD);
             if((GOLD_FOUND == 0) && (IS_GOLD == 1)){
                 GOLD_FOUND = 1;
                 encoder = d.frontLeft.getCurrentPosition();
-            } else if ((GOLD_FOUND == 1) && (IS_GOLD == 0)){
+            } else if ((GOLD_FOUND == 1) && (IS_GOLD != 1)){
                 GOLD_FOUND = -1;
                 encoder = d.frontLeft.getCurrentPosition() - encoder;
                 d.stopBack();
@@ -108,13 +123,19 @@ public class MainAutonomousCrater extends LinearOpMode {
             telemetry.addData("Encoder Position", encoder);
             telemetry.update();
         }
-        telemetry.addData("Gold Distance ", encoder);
-        telemetry.update();
-        d.beginTranslationSide(Distance.fromEncoderTicks(encoder + 200), 0.5);
-        while (!isStopRequested() && d.isBusy());
-        d.beginTranslation(Distance.fromInches(9), 0.2);
-        while (!isStopRequested() && d.isBusy());
+        if(GOLD_FOUND != -1){
 
+        } else {
+            telemetry.addData("Gold Distance ", encoder);
+            telemetry.update();
+            d.beginTranslation(Distance.fromEncoderTicks(encoder), 0.5);
+            while (!isStopRequested() && d.isBusy());
+        }
+        d.beginRotation(Angle.fromDegrees(90), 1);
+        while (!isStopRequested() && d.isBusy());
+        d.beginTranslation(Distance.fromInches(15), 0.5);
+        Thread.sleep(1000);
+        m.rotate();
     }
 
 

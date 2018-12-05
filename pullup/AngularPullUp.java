@@ -40,6 +40,9 @@ public class AngularPullUp extends PullUp {
         pullUpMotor.setPower(-1);
         pullUpServo.setPosition(1);
         Thread.sleep(1000);
+        pullUpMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        pullUpMotor.setPower(1);
+        Thread.sleep(2000);
         pullUpMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         pullUpMotor.setTargetPosition(TARGET_POSITION_TO_OPEN);
         pullUpMotor.setPower(1);
@@ -50,13 +53,18 @@ public class AngularPullUp extends PullUp {
         pullUpMotor.setTargetPosition(0);
         pullUpMotor.setPower(1);
         while (pullUpMotor.isBusy() && !Thread.currentThread().isInterrupted()) {}
-        pullUpMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        pullUpMotor.setPower(-1);
+        pullUpMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        pullUpMotor.setPower(-0.5);
         Thread.sleep(500);
         pullUpServo.setPosition(0);
         Thread.sleep(1000);
         pullUpMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         pullUpMotor.setTargetPosition(0);
+    }
+
+    public void reset() {
+        pullUpMotor.setPower(0.8);
+        pullUpMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     private enum State {

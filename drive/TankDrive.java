@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.teamcode.common.Angle;
 import org.firstinspires.ftc.teamcode.common.Config;
 import org.firstinspires.ftc.teamcode.common.Distance;
@@ -45,6 +46,31 @@ public class TankDrive extends Drive {
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        telemetry.addData("Front Left", new Func<Integer>() {
+            @Override
+            public Integer value() {
+                return frontLeft.getCurrentPosition();
+            }
+        });
+        telemetry.addData("Front Right", new Func<Integer>() {
+            @Override
+            public Integer value() {
+                return frontRight.getCurrentPosition();
+            }
+        });
+        telemetry.addData("Back Left", new Func<Integer>() {
+            @Override
+            public Integer value() {
+                return backLeft.getCurrentPosition();
+            }
+        });
+        telemetry.addData("Back Right", new Func<Integer>() {
+            @Override
+            public Integer value() {
+                return backRight.getCurrentPosition();
+            }
+        });
     }
 
 
