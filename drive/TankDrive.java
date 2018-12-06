@@ -176,6 +176,6 @@ public class TankDrive extends Drive {
     }
 
     public boolean isBusy() {
-        return frontLeft.isBusy() || frontRight.isBusy() || backLeft.isBusy() || backRight.isBusy();
+        return (frontLeft.isBusy());
     }
 }

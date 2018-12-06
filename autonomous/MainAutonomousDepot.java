@@ -59,12 +59,10 @@ public class MainAutonomousDepot extends LinearOpMode {
         d.beginRotation(Angle.fromDegrees(10),0.5);
         telemetry.addLine("LOWERED3");
         telemetry.update();
-        d.beginTranslationSide(Distance.fromInches(-8),0.5);
+        d.beginTranslationSide(Distance.fromInches(-4),0.5);
         telemetry.addLine("LOWERED4");
         telemetry.update();
-        while (d.isBusy() && !isStopRequested()) {
-            telemetry.update();
-        }
+        Thread.sleep(500);
         d.beginRotation(Angle.fromDegrees(5),0.5);
         telemetry.addData("Stop", isStopRequested());
         telemetry.update();
@@ -88,14 +86,16 @@ public class MainAutonomousDepot extends LinearOpMode {
         int GOLD_FOUND = 0;
         int encoder = 0;
         int TO_CENTER = d.frontLeft.getCurrentPosition();
-        d.beginTranslation(Distance.fromInches(-50), 0.4);
+        d.beginRotation(Angle.fromDegrees(-15), 0.4);
+        while (!isStopRequested() && d.isBusy());
+        d.beginTranslation(Distance.fromInches(-40), 0.4);
         telemetry.addLine("MOVING ALONG MINERALS");
         telemetry.update();
 
         while (d.isBusy()){
             IS_GOLD = v.isGoldMineral(true);
             telemetry.addData("Is Gold? ", IS_GOLD);
-            if((GOLD_FOUND == 0) && (IS_GOLD == 1)){
+            if((GOLD_FOUND == 0) && (IS_GOLD == 1)) {
                 GOLD_FOUND = 1;
                 encoder = d.frontLeft.getCurrentPosition();
             } else if ((GOLD_FOUND == 1) && (IS_GOLD != 1)){
@@ -110,7 +110,9 @@ public class MainAutonomousDepot extends LinearOpMode {
             telemetry.update();
         }
         if(GOLD_FOUND != -1){
-
+            d.beginTranslation(Distance.fromEncoderTicks(20), 0.5);
+            while (!isStopRequested() && d.isBusy());
+            TO_CENTER = 0;
         } else {
             telemetry.addData("Gold Distance ", encoder);
             telemetry.update();
@@ -119,20 +121,29 @@ public class MainAutonomousDepot extends LinearOpMode {
         }
         d.beginRotation(Angle.fromDegrees(90), 1);
         while (!isStopRequested() && d.isBusy());
-        d.beginTranslation(Distance.fromInches(25), 0.5);
+        d.beginTranslation(Distance.fromInches(35), 0.5);
         Thread.sleep(2000);
+
         /*d.beginRotation(Angle.fromDegrees(45), 1);
         while (!isStopRequested() && d.isBusy());
         d.beginTranslationSide(Distance.fromInches(-24), 0.6);
         Thread.sleep(3000);
         d.beginTranslation(Distance.fromInches(0), 0.6);*/
-        d.beginTranslationSide(Distance.fromEncoderTicks(-TO_CENTER).subtract(Distance.fromInches(-25)), 0.4);
-        Thread.sleep(2500);
+        d.beginTranslationSide(Distance.fromEncoderTicks(-TO_CENTER).subtract(Distance.fromInches(-30)), 0.4);
+        Thread.sleep(2000);
         //d.beginTranslation(Distance.fromInches(20), 0.7);
         //Thread.sleep(2000);
+        d.beginTranslation(Distance.fromInches(6),1);
         p.close();
         telemetry.addLine("CLOSE");
+        telemetry.addData("TOCENTER", TO_CENTER);
         telemetry.update();
+        d.beginRotation(Angle.fromDegrees(50), 1);
+        Thread.sleep(200);
+        d.beginRotation(Angle.fromDegrees(-50),1);
+        Thread.sleep(200);
+
+
     }
 
 

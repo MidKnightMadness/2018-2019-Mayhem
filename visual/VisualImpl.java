@@ -84,7 +84,7 @@ public class VisualImpl extends Visual {
         }
 
         // Flash On:
-        CameraDevice.getInstance().setFlashTorchMode(true);
+        //CameraDevice.getInstance().setFlashTorchMode(true);
         // Unable to use Vuforia Targets for minerals :(
     }
 

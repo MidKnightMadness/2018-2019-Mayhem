@@ -22,6 +22,7 @@ public class AngularPullUp extends PullUp {
         pullUpMotor = hardwareMap.dcMotor.get(Config.PullUp.PULLUP_MOTOR);
         pullUpServo = hardwareMap.servo.get(Config.PullUp.PULLUP_SERVO);
         pullUpMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         pullUpMotor.setPower(-POWER_TO_OPEN_PULLUP);
         try {
             Thread.sleep(300);
@@ -36,7 +37,7 @@ public class AngularPullUp extends PullUp {
     }
 
     public void open() throws InterruptedException{
-        pullUpMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        pullUpMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         pullUpMotor.setPower(-1);
         pullUpServo.setPosition(1);
         Thread.sleep(1000);
@@ -47,6 +48,7 @@ public class AngularPullUp extends PullUp {
         pullUpMotor.setTargetPosition(TARGET_POSITION_TO_OPEN);
         pullUpMotor.setPower(1);
         while (pullUpMotor.isBusy() && !Thread.currentThread().isInterrupted()){}
+        pullUpMotor.setPower(0);
     }
 
     public void close() throws InterruptedException {
@@ -60,6 +62,8 @@ public class AngularPullUp extends PullUp {
         Thread.sleep(1000);
         pullUpMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         pullUpMotor.setTargetPosition(0);
+        while (pullUpMotor.isBusy() && !Thread.currentThread().isInterrupted()){}
+        pullUpMotor.setPower(0);
     }
 
     public void reset() {
