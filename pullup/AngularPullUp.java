@@ -51,7 +51,18 @@ public class AngularPullUp extends PullUp {
         pullUpMotor.setPower(0);
     }
 
-    public void close() throws InterruptedException {
+    public void drop() throws InterruptedException {
+        pullUpMotor.setTargetPosition(2000);
+        pullUpMotor.setPower(1);
+        while (pullUpMotor.isBusy() && !Thread.currentThread().isInterrupted()) {}
+        Thread.sleep(200);
+        pullUpMotor.setTargetPosition(0);
+        pullUpMotor.setPower(1);
+        while (pullUpMotor.isBusy() && !Thread.currentThread().isInterrupted()) {}
+        pullUpMotor.setTargetPosition(2000);
+        pullUpMotor.setPower(1);
+        while (pullUpMotor.isBusy() && !Thread.currentThread().isInterrupted()) {}
+        Thread.sleep(200);
         pullUpMotor.setTargetPosition(0);
         pullUpMotor.setPower(1);
         while (pullUpMotor.isBusy() && !Thread.currentThread().isInterrupted()) {}
@@ -63,6 +74,21 @@ public class AngularPullUp extends PullUp {
         pullUpMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         pullUpMotor.setTargetPosition(0);
         while (pullUpMotor.isBusy() && !Thread.currentThread().isInterrupted()){}
+        pullUpMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        pullUpMotor.setPower(0);
+    }
+
+    public void close() throws InterruptedException {
+        pullUpMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        pullUpMotor.setTargetPosition(0);
+        pullUpMotor.setPower(1);
+        while (pullUpMotor.isBusy() && !Thread.currentThread().isInterrupted()) {}
+        pullUpMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        pullUpMotor.setPower(-1);
+        Thread.sleep(1000);
+        pullUpServo.setPosition(0);
+        Thread.sleep(1000);
+        pullUpMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         pullUpMotor.setPower(0);
     }
 

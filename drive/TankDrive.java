@@ -176,6 +176,6 @@ public class TankDrive extends Drive {
     }
 
     public boolean isBusy() {
-        return (frontLeft.isBusy());
+        return Math.abs(frontLeft.getCurrentPosition() - frontLeft.getTargetPosition()) > 10;
     }
 }

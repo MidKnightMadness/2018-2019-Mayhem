@@ -37,6 +37,7 @@ public class MainAutonomousDepot extends LinearOpMode {
     public void runOpMode() throws InterruptedException {   // This method is run by the OpMode Manager on init until the stop button is pressed.
         telemetry.addLine("HI IM ALIVE");
         telemetry.update();
+        //Visual.SAVE = true;
 
         Drive d = AssemblyManager.newInstance(Drive.class, hardwareMap, telemetry); // Initialize all Assemblies required during the Autonomous program by the interface
         Visual v = AssemblyManager.newInstance(Visual.class, hardwareMap, telemetry);
@@ -74,7 +75,7 @@ public class MainAutonomousDepot extends LinearOpMode {
         telemetry.addLine("MOVE UP");
         telemetry.update();
         Thread.sleep(1000);
-        d.beginTranslationSide(Distance.fromInches(-14), 0.4);
+        d.beginTranslationSide(Distance.fromInches(-17), 0.4);
         telemetry.addLine("MOVE LEFT");
         telemetry.update();
         Thread.sleep(1000);
@@ -88,7 +89,9 @@ public class MainAutonomousDepot extends LinearOpMode {
         int TO_CENTER = d.frontLeft.getCurrentPosition();
         d.beginRotation(Angle.fromDegrees(-15), 0.4);
         while (!isStopRequested() && d.isBusy());
-        d.beginTranslation(Distance.fromInches(-40), 0.4);
+        d.beginTranslationSide(Distance.fromInches(-4), 0.4);
+        while (!isStopRequested() && d.isBusy());
+        d.beginTranslation(Distance.fromInches(-35), 0.4);
         telemetry.addLine("MOVING ALONG MINERALS");
         telemetry.update();
 
@@ -100,7 +103,7 @@ public class MainAutonomousDepot extends LinearOpMode {
                 encoder = d.frontLeft.getCurrentPosition();
             } else if ((GOLD_FOUND == 1) && (IS_GOLD != 1)){
                 GOLD_FOUND = -1;
-                encoder = d.frontLeft.getCurrentPosition() - encoder;
+                encoder = d.frontLeft.getCurrentPosition() - encoder - 400;
                 TO_CENTER = d.frontLeft.getCurrentPosition() - TO_CENTER;
                 d.stopBack();
                 break;
@@ -130,20 +133,34 @@ public class MainAutonomousDepot extends LinearOpMode {
         Thread.sleep(3000);
         d.beginTranslation(Distance.fromInches(0), 0.6);*/
         d.beginTranslationSide(Distance.fromEncoderTicks(-TO_CENTER).subtract(Distance.fromInches(-30)), 0.4);
-        Thread.sleep(2000);
+        Thread.sleep(1000);
         //d.beginTranslation(Distance.fromInches(20), 0.7);
         //Thread.sleep(2000);
-        d.beginTranslation(Distance.fromInches(6),1);
-        p.close();
+        //d.beginTranslation(Distance.fromInches(6),0.6);
+        Thread drop = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    p.close();
+                } catch (InterruptedException e) {
+                    telemetry.addLine(e.getMessage());
+                }
+            }
+        });
+        drop.start();
         telemetry.addLine("CLOSE");
         telemetry.addData("TOCENTER", TO_CENTER);
         telemetry.update();
-        d.beginRotation(Angle.fromDegrees(50), 1);
+        Thread.sleep(3000);
+        d.beginRotation(Angle.fromDegrees(-25), 0.6);
         Thread.sleep(200);
-        d.beginRotation(Angle.fromDegrees(-50),1);
+        d.beginRotation(Angle.fromDegrees(50),0.6);
         Thread.sleep(200);
-
-
+        d.beginRotation(Angle.fromDegrees(-50), 0.6);
+        Thread.sleep(200);
+        d.beginRotation(Angle.fromDegrees(25),0.6);
+        Thread.sleep(200);
+        drop.join();
     }
 
 

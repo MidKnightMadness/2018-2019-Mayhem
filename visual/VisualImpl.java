@@ -12,9 +12,11 @@ import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.internal.android.dex.util.FileUtils;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 
 import static org.firstinspires.ftc.teamcode.visual.Visual.MineralPosition.CENTER;
@@ -81,6 +83,14 @@ public class VisualImpl extends Visual {
                     resultView.setRotation(-90);
                 }
             });
+        }
+
+        if (Visual.SAVE) {
+            File mineralFolder = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "Pictures/minerals/");
+            File files[] = mineralFolder.listFiles();
+            for (File file : files) {
+                file.delete();
+            }
         }
 
         // Flash On:
@@ -166,7 +176,7 @@ public class VisualImpl extends Visual {
                 //telemetry.update();
 
 
-                if (save) {
+                if (Visual.SAVE) {
                     try {
                         // Save Src
                         String name = "Output_" + Math.random();
