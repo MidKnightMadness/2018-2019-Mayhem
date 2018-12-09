@@ -78,6 +78,10 @@ public class AngularPullUp extends PullUp {
         pullUpMotor.setPower(0);
     }
 
+    public void resetTeleOp() throws InterruptedException {
+
+    }
+
     public void close() throws InterruptedException {
         pullUpMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         pullUpMotor.setTargetPosition(0);
@@ -101,7 +105,8 @@ public class AngularPullUp extends PullUp {
         OPENED,
         OPENING,
         CLOSING,
-        CLOSED;
+        CLOSED,
+        RESETTING;
 
         @Override
         public String toString() {
@@ -151,11 +156,28 @@ public class AngularPullUp extends PullUp {
             } else if (subState == 2 && !pullUpMotor.isBusy()) {
                 state = State.OPENED;
             }
+        } else if (state == State.RESETTING) {
+            if (subState == 0) {
+                pullUpMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                pullUpMotor.setPower(-0.8);
+                timer.reset();
+                subState = 1;
+            } else if (subState == 1 && timer.milliseconds() > 2000){
+                pullUpMotor.setPower(0);
+                pullUpMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                state = State.CLOSED;
+                pullUpMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                pullUpMotor.setTargetPosition(0);
+                pullUpMotor.setPower(0);
+            }
         } else if (gamepad1.dpad_down && state == State.CLOSED) {
             state = State.OPENING;
             subState = 0;
         } else if (gamepad1.dpad_up && state == State.OPENED) {
             state = State.CLOSING;
+            subState = 0;
+        } else if (gamepad1.x) {
+            state = State.RESETTING;
             subState = 0;
         }
     }

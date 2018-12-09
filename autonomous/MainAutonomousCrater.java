@@ -132,7 +132,7 @@ public class MainAutonomousCrater extends LinearOpMode {
         } else {
             telemetry.addData("Gold Distance ", encoder);
             telemetry.update();
-            d.beginTranslation(Distance.fromEncoderTicks(encoder), 0.5);
+            d.beginTranslation(Distance.fromEncoderTicks(encoder).subtract(Distance.fromInches(6)), 0.5);
             while (!isStopRequested() && d.isBusy());
         }
         d.beginRotation(Angle.fromDegrees(90), 1);

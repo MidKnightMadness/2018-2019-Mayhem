@@ -86,12 +86,14 @@ public class MainAutonomousDepot extends LinearOpMode {
         int IS_GOLD = 0;
         int GOLD_FOUND = 0;
         int encoder = 0;
-        int TO_CENTER = d.frontLeft.getCurrentPosition();
+        int TO_CENTER = Distance.fromEncoderTicks(d.frontLeft.getCurrentPosition()).subtract(Distance.fromInches(-25)).toEncoderTicks();
         d.beginRotation(Angle.fromDegrees(-15), 0.4);
         while (!isStopRequested() && d.isBusy());
         d.beginTranslationSide(Distance.fromInches(-4), 0.4);
         while (!isStopRequested() && d.isBusy());
-        d.beginTranslation(Distance.fromInches(-35), 0.4);
+        d.beginTranslation(Distance.fromInches(10), 0.4);
+        while (!isStopRequested() && d.isBusy());
+        d.beginTranslation(Distance.fromInches(-45), 0.4);
         telemetry.addLine("MOVING ALONG MINERALS");
         telemetry.update();
 
@@ -103,7 +105,7 @@ public class MainAutonomousDepot extends LinearOpMode {
                 encoder = d.frontLeft.getCurrentPosition();
             } else if ((GOLD_FOUND == 1) && (IS_GOLD != 1)){
                 GOLD_FOUND = -1;
-                encoder = d.frontLeft.getCurrentPosition() - encoder - 400;
+                encoder = d.frontLeft.getCurrentPosition() - encoder;
                 TO_CENTER = d.frontLeft.getCurrentPosition() - TO_CENTER;
                 d.stopBack();
                 break;
@@ -115,11 +117,12 @@ public class MainAutonomousDepot extends LinearOpMode {
         if(GOLD_FOUND != -1){
             d.beginTranslation(Distance.fromEncoderTicks(20), 0.5);
             while (!isStopRequested() && d.isBusy());
-            TO_CENTER = 0;
+            TO_CENTER = d.frontLeft.getCurrentPosition() - TO_CENTER;
         } else {
+
             telemetry.addData("Gold Distance ", encoder);
             telemetry.update();
-            d.beginTranslation(Distance.fromEncoderTicks(encoder), 0.5);
+            d.beginTranslation(Distance.fromEncoderTicks(encoder).subtract(Distance.fromInches(6)), 0.5);
             while (!isStopRequested() && d.isBusy());
         }
         d.beginRotation(Angle.fromDegrees(90), 1);
@@ -132,8 +135,8 @@ public class MainAutonomousDepot extends LinearOpMode {
         d.beginTranslationSide(Distance.fromInches(-24), 0.6);
         Thread.sleep(3000);
         d.beginTranslation(Distance.fromInches(0), 0.6);*/
-        d.beginTranslationSide(Distance.fromEncoderTicks(-TO_CENTER).subtract(Distance.fromInches(-30)), 0.4);
-        Thread.sleep(1000);
+        d.beginTranslationSide(Distance.fromEncoderTicks(-TO_CENTER).subtract(Distance.fromInches(0)), 0.4);
+        while (!isStopRequested() && d.isBusy());
         //d.beginTranslation(Distance.fromInches(20), 0.7);
         //Thread.sleep(2000);
         //d.beginTranslation(Distance.fromInches(6),0.6);
@@ -141,7 +144,7 @@ public class MainAutonomousDepot extends LinearOpMode {
             @Override
             public void run() {
                 try {
-                    p.close();
+                    p.drop();
                 } catch (InterruptedException e) {
                     telemetry.addLine(e.getMessage());
                 }
