@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.common.tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+@Disabled
 @Autonomous
 public class ThreadTest extends LinearOpMode {
     @Override
