@@ -37,6 +37,7 @@ public class MainAutonomousDepot extends LinearOpMode {
     public void runOpMode() throws InterruptedException {   // This method is run by the OpMode Manager on init until the stop button is pressed.
         telemetry.addLine("HI IM ALIVE");
         telemetry.update();
+        //Visual.SAVE = true;
 
         Drive d = AssemblyManager.newInstance(Drive.class, hardwareMap, telemetry); // Initialize all Assemblies required during the Autonomous program by the interface
         Visual v = AssemblyManager.newInstance(Visual.class, hardwareMap, telemetry);
@@ -74,7 +75,7 @@ public class MainAutonomousDepot extends LinearOpMode {
         telemetry.addLine("MOVE UP");
         telemetry.update();
         Thread.sleep(1000);
-        d.beginTranslationSide(Distance.fromInches(-14), 0.4);
+        d.beginTranslationSide(Distance.fromInches(-17), 0.4);
         telemetry.addLine("MOVE LEFT");
         telemetry.update();
         Thread.sleep(1000);
@@ -85,10 +86,14 @@ public class MainAutonomousDepot extends LinearOpMode {
         int IS_GOLD = 0;
         int GOLD_FOUND = 0;
         int encoder = 0;
-        int TO_CENTER = d.frontLeft.getCurrentPosition();
+        int TO_CENTER = Distance.fromEncoderTicks(d.frontLeft.getCurrentPosition()).subtract(Distance.fromInches(-25)).toEncoderTicks();
         d.beginRotation(Angle.fromDegrees(-15), 0.4);
         while (!isStopRequested() && d.isBusy());
-        d.beginTranslation(Distance.fromInches(-40), 0.4);
+        d.beginTranslationSide(Distance.fromInches(-4), 0.4);
+        while (!isStopRequested() && d.isBusy());
+        d.beginTranslation(Distance.fromInches(10), 0.4);
+        while (!isStopRequested() && d.isBusy());
+        d.beginTranslation(Distance.fromInches(-45), 0.4);
         telemetry.addLine("MOVING ALONG MINERALS");
         telemetry.update();
 
@@ -112,11 +117,12 @@ public class MainAutonomousDepot extends LinearOpMode {
         if(GOLD_FOUND != -1){
             d.beginTranslation(Distance.fromEncoderTicks(20), 0.5);
             while (!isStopRequested() && d.isBusy());
-            TO_CENTER = 0;
+            TO_CENTER = d.frontLeft.getCurrentPosition() - TO_CENTER;
         } else {
+
             telemetry.addData("Gold Distance ", encoder);
             telemetry.update();
-            d.beginTranslation(Distance.fromEncoderTicks(encoder), 0.5);
+            d.beginTranslation(Distance.fromEncoderTicks(encoder).subtract(Distance.fromInches(6)), 0.5);
             while (!isStopRequested() && d.isBusy());
         }
         d.beginRotation(Angle.fromDegrees(90), 1);
@@ -129,21 +135,35 @@ public class MainAutonomousDepot extends LinearOpMode {
         d.beginTranslationSide(Distance.fromInches(-24), 0.6);
         Thread.sleep(3000);
         d.beginTranslation(Distance.fromInches(0), 0.6);*/
-        d.beginTranslationSide(Distance.fromEncoderTicks(-TO_CENTER).subtract(Distance.fromInches(-30)), 0.4);
-        Thread.sleep(2000);
+        d.beginTranslationSide(Distance.fromEncoderTicks(-TO_CENTER).subtract(Distance.fromInches(0)), 0.4);
+        while (!isStopRequested() && d.isBusy());
         //d.beginTranslation(Distance.fromInches(20), 0.7);
         //Thread.sleep(2000);
-        d.beginTranslation(Distance.fromInches(6),1);
-        p.close();
+        //d.beginTranslation(Distance.fromInches(6),0.6);
+        Thread drop = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    p.drop();
+                } catch (InterruptedException e) {
+                    telemetry.addLine(e.getMessage());
+                }
+            }
+        });
+        drop.start();
         telemetry.addLine("CLOSE");
         telemetry.addData("TOCENTER", TO_CENTER);
         telemetry.update();
-        d.beginRotation(Angle.fromDegrees(50), 1);
+        Thread.sleep(3000);
+        d.beginRotation(Angle.fromDegrees(-25), 0.6);
         Thread.sleep(200);
-        d.beginRotation(Angle.fromDegrees(-50),1);
+        d.beginRotation(Angle.fromDegrees(50),0.6);
         Thread.sleep(200);
-
-
+        d.beginRotation(Angle.fromDegrees(-50), 0.6);
+        Thread.sleep(200);
+        d.beginRotation(Angle.fromDegrees(25),0.6);
+        Thread.sleep(200);
+        drop.join();
     }
 
 

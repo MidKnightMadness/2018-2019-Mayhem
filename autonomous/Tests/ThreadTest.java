@@ -1,29 +1,27 @@
-package org.firstinspires.ftc.teamcode.common.tests;
+package org.firstinspires.ftc.teamcode.autonomous.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-//@Autonomous
+@Autonomous
 public class ThreadTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        waitForStart();
-
-        try {
+        for (int i = 0; i < 10000; i++) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    for (int i = 0; i < 1000; i++) {
-                        telemetry.addLine(i + "");
-                        telemetry.update();
+                    int a = 0;
+                    int b = a+1;
+                    try {
+                        Thread.sleep(100);
+                    } catch (Exception e) {
+
                     }
                 }
             }).start();
-        } catch (Exception e) {
-            telemetry.addLine(e.getMessage());
-            telemetry.update();
         }
-
-        while (!isStopRequested());
+        telemetry.addLine("Finished!");
+        telemetry.update();
     }
 }

@@ -23,6 +23,7 @@ public abstract class Visual extends OpMode {
         }
     }
     public static boolean DEBUG = false;
+    public static boolean SAVE = false;
 
     public static double minYellow[] = {20, 0.5, 0.3};
     public static double maxYellow[] = {62, 1, 1};

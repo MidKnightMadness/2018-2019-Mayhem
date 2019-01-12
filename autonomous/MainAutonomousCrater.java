@@ -92,18 +92,22 @@ public class MainAutonomousCrater extends LinearOpMode {
         telemetry.addLine("MOVE UP");
         telemetry.update();
         Thread.sleep(1000);
-        d.beginTranslationSide(Distance.fromInches(-16), 0.4);
+        d.beginTranslationSide(Distance.fromInches(-20), 0.4);
         telemetry.addLine("MOVE LEFT");
         telemetry.update();
         Thread.sleep(1000);
-        d.beginRotation(Angle.fromDegrees(-90), 1);
+        d.beginRotation(Angle.fromDegrees(-90), 0.6);
         telemetry.addLine("ROTATE");
         telemetry.update();
         Thread.sleep(1000);
         int IS_GOLD = 0;
         int GOLD_FOUND = 0;
         int encoder = 0;
-        d.beginTranslation(Distance.fromInches(-50), 0.2);
+        d.beginRotation(Angle.fromDegrees(-5), 0.4);
+        while (!isStopRequested() && d.isBusy());
+        d.beginTranslationSide(Distance.fromInches(-4), 0.4);
+        while (!isStopRequested() && d.isBusy());
+        d.beginTranslation(Distance.fromInches(-40), 0.2);
         telemetry.addLine("MOVING ALONG MINERALS");
         telemetry.update();
 
@@ -128,12 +132,12 @@ public class MainAutonomousCrater extends LinearOpMode {
         } else {
             telemetry.addData("Gold Distance ", encoder);
             telemetry.update();
-            d.beginTranslation(Distance.fromEncoderTicks(encoder), 0.5);
+            d.beginTranslation(Distance.fromEncoderTicks(encoder).subtract(Distance.fromInches(6)), 0.5);
             while (!isStopRequested() && d.isBusy());
         }
         d.beginRotation(Angle.fromDegrees(90), 1);
         while (!isStopRequested() && d.isBusy());
-        d.beginTranslation(Distance.fromInches(15), 0.5);
+        d.beginTranslation(Distance.fromInches(20), 0.5);
         Thread.sleep(1000);
         m.rotate();
     }
