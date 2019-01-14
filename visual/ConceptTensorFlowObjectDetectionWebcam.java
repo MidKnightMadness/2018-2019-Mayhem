@@ -31,6 +31,8 @@ package org.firstinspires.ftc.teamcode.visual;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.RobotLog;
+import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -55,6 +57,8 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
+    private final int RGB565 = 1; // For OnBotJava
+
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -160,6 +164,8 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
 
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
+        Vuforia.setFrameFormat(RGB565, true);
+
 
         // Loading trackables is not necessary for the Tensor Flow Object Detection engine.
     }
@@ -168,10 +174,15 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
      * Initialize the Tensor Flow Object Detection engine.
      */
     private void initTfod() {
+        RobotLog.a("HELLOHELLOHELLO DO YOU SEE MEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
             "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        RobotLog.a("After int");
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        RobotLog.a("After params");
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        RobotLog.a("After get");
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
+        RobotLog.a("After load");
     }
 }
