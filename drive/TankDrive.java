@@ -9,6 +9,8 @@ import org.firstinspires.ftc.teamcode.common.Angle;
 import org.firstinspires.ftc.teamcode.common.Config;
 import org.firstinspires.ftc.teamcode.common.Distance;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * TankDrive: A simple Drive implementation for a tank-drive robot.
  *
@@ -24,6 +26,8 @@ public class TankDrive extends Drive {
     public DcMotor frontRight;
     public DcMotor backLeft;
     public DcMotor backRight;
+    private final AtomicBoolean ato = new AtomicBoolean(false);
+    private Thread send;
 
     @Override
     public void init() {
@@ -71,6 +75,17 @@ public class TankDrive extends Drive {
                 return backRight.getCurrentPosition();
             }
         });
+
+        send = new Thread(new Runnable() {
+            public void run() {
+                ato.set(true);
+                while (ato.get()){
+                    telemetry.addData("ato", ato);
+                    telemetry.update();
+                }
+            }
+        });
+        send.start();
     }
 
 
@@ -177,5 +192,9 @@ public class TankDrive extends Drive {
 
     public boolean isBusy() {
         return Math.abs(frontLeft.getCurrentPosition() - frontLeft.getTargetPosition()) > 10;
+    }
+
+    public void stop(){
+        ato.set(false);
     }
 }
