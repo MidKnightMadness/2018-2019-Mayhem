@@ -140,6 +140,7 @@ public class MainAutonomousCrater extends LinearOpMode {
         d.beginTranslation(Distance.fromInches(20), 0.5);
         Thread.sleep(1000);
         m.rotate();
+        d.stop();
     }
 
 

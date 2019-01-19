@@ -32,5 +32,6 @@ public abstract class Drive extends OpMode {
     public abstract void stopBack();
 
     public abstract boolean isBusy();
+    public abstract void stop();
 }
 

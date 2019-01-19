@@ -215,6 +215,11 @@ public class VisualImpl extends Visual {
         return isYellow;
     }
 
+    @Override
+    public MineralPosition findGoldMineral() throws InterruptedException {
+        return null;
+    }
+
     /*private int valueTest(int color) {
         return Color.blue(color);
     }*/

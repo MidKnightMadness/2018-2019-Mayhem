@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.common.AssemblyManager.Implementation;
  * Created by Gregory on 9/14/18.
  */
 
-@Implementation(VisualImpl.class)
+@Implementation(TensorFlowImpl.class)
 public abstract class Visual extends OpMode {
     public enum MineralPosition {
         LEFT,

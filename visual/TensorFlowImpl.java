@@ -53,11 +53,11 @@ import java.util.List;
  */
 @TeleOp(name = "TensorFlow", group = "Concept")
 //@Disabled
-public class ConceptTensorFlowObjectDetection extends LinearOpMode {
+public class TensorFlowImpl extends Visual {
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
-    private int goldpos = 0;
+    private Visual.MineralPosition goldpos = Visual.MineralPosition.UNKNOWN;
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -85,8 +85,12 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
      */
     private TFObjectDetector tfod;
 
+    private Thread TFODThread;
+
+    private volatile boolean running = false;
+
     @Override
-    public void runOpMode() {
+    public void init() {
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
         initVuforia();
@@ -100,60 +104,94 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start tracking");
         telemetry.update();
-        waitForStart();
 
-        if (opModeIsActive()) {
-            /** Activate Tensor Flow Object Detection. */
-            if (tfod != null) {
-                tfod.activate();
-            }
 
-            while (opModeIsActive()) {
-                if (tfod != null) {
-                    // getUpdatedRecognitions() will return null if no new information is available since
-                    // the last time that call was made.
-                    List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-                    if (updatedRecognitions != null) {
-                      telemetry.addData("# Object Detected", updatedRecognitions.size());
-                      if (updatedRecognitions.size() == 2) {
-                        int goldMineralX = -1;
-                        int silverMineral1X = -1;
-                        int silverMineral2X = -1;
-                        for (Recognition recognition : updatedRecognitions) {
-                          if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-                            goldMineralX = (int) recognition.getLeft();
-                          } else if (silverMineral1X == -1) {
-                            silverMineral1X = (int) recognition.getLeft();
-                          } else {
-                            silverMineral2X = (int) recognition.getLeft();
-                          }
+    }
+
+    public void startTfod() {
+        if (tfod != null) {
+            tfod.activate();
+        }
+
+        running = true;
+
+        TFODThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (running && !Thread.currentThread().isInterrupted()) {
+                    if (tfod != null) {
+                        // getUpdatedRecognitions() will return null if no new information is available since
+                        // the last time that call was made.
+                        List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+                        if (updatedRecognitions != null) {
+                            telemetry.addData("# Object Detected", updatedRecognitions.size());
+                            if (updatedRecognitions.size() == 2) {
+                                int goldMineralX = -1;
+                                int silverMineral1X = -1;
+                                int silverMineral2X = -1;
+                                for (Recognition recognition : updatedRecognitions) {
+                                    if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
+                                        goldMineralX = (int) recognition.getLeft();
+                                    } else if (silverMineral1X == -1) {
+                                        silverMineral1X = (int) recognition.getLeft();
+                                    } else {
+                                        silverMineral2X = (int) recognition.getLeft();
+                                    }
+                                }
+                                if (goldMineralX * silverMineral1X * silverMineral2X < 0) {
+                                    if (goldMineralX != -1 && silverMineral1X != -1) {
+                                        if (goldMineralX < silverMineral1X) {
+                                            goldpos = Visual.MineralPosition.CENTER;
+                                        } else {
+                                            goldpos = Visual.MineralPosition.LEFT;
+                                        }
+                                    } else {
+                                        goldpos = Visual.MineralPosition.RIGHT;
+                                    }
+
+                                }
+                            }
+                            telemetry.addData("Gold Mineral Position", goldpos.toString());
+                            telemetry.update();
                         }
-                        if (goldMineralX * silverMineral1X * silverMineral2X != -1) {
-                          if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
-                            telemetry.addData("Gold Mineral Position", "Left");
-                            goldpos = -1;
-                          } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
-                            telemetry.addData("Gold Mineral Position", "Right");
-                            goldpos = 1;
-                          } else {
-                            telemetry.addData("Gold Mineral Position", "Center");
-                            goldpos = 0;
-                          }
-                        }
-                      }
-                      telemetry.update();
                     }
                 }
             }
-        }
+        });
+        TFODThread.start();
+    }
 
+    @Override
+    public void init_loop() {
+        startTfod();
+    }
+
+    @Override
+    public void loop() {
+
+    }
+
+    @Override
+    public int isGoldMineral(boolean save) throws InterruptedException {
+        return -1;
+    }
+
+    @Override
+    public int isGoldMineral(boolean save, int print_x, int print_y) throws InterruptedException {
+        return -1;
+    }
+
+    public Visual.MineralPosition findGoldMineral() {
+        return goldpos;
+    }
+
+    @Override
+    public void stop() {
+        running = false;
+        TFODThread.interrupt();
         if (tfod != null) {
             tfod.shutdown();
         }
-    }
-
-    public int returnGoldPos() {
-        return goldpos;
     }
 
     /**

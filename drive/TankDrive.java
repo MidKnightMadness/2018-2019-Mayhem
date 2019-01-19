@@ -26,7 +26,7 @@ public class TankDrive extends Drive {
     public DcMotor frontRight;
     public DcMotor backLeft;
     public DcMotor backRight;
-    private final AtomicBoolean ato = new AtomicBoolean(false);
+    private volatile boolean ato = false;
     private Thread send;
 
     @Override
@@ -78,8 +78,8 @@ public class TankDrive extends Drive {
 
         send = new Thread(new Runnable() {
             public void run() {
-                ato.set(true);
-                while (ato.get()){
+                ato = true;
+                while (ato && !Thread.currentThread().isInterrupted()){
                     telemetry.addData("ato", ato);
                     telemetry.update();
                 }
@@ -194,7 +194,13 @@ public class TankDrive extends Drive {
         return Math.abs(frontLeft.getCurrentPosition() - frontLeft.getTargetPosition()) > 10;
     }
 
-    public void stop(){
-        ato.set(false);
+    public void stop() {
+        ato = false;
+        send.interrupt();
+        try {
+            send.join();
+        } catch (Exception e) {
+
+        }
     }
 }
