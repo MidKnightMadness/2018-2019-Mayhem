@@ -36,5 +36,6 @@ public abstract class Visual extends OpMode {
     // 1 = Gold, 0 = Silver, -1 = Unknown
     public abstract int isGoldMineral(boolean save) throws InterruptedException;
     public abstract int isGoldMineral(boolean save, int print_x, int print_y) throws InterruptedException;
+    public abstract MineralPosition findGoldMineral() throws InterruptedException;
     public abstract void stop();
 }
