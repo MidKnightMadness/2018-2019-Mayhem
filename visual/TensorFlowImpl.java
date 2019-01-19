@@ -140,7 +140,7 @@ public class TensorFlowImpl extends Visual {
                                 }
                                 if (goldMineralX * silverMineral1X * silverMineral2X < 0) {
                                     if (goldMineralX != -1 && silverMineral1X != -1) {
-                                        if (goldMineralX < silverMineral1X) {
+                                        if (goldMineralX > silverMineral1X) {
                                             goldpos = Visual.MineralPosition.CENTER;
                                         } else {
                                             goldpos = Visual.MineralPosition.LEFT;

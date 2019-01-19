@@ -174,6 +174,19 @@ public class TankDrive extends Drive {
     }
 
     @Override
+    public void beginTranslationDiagonal(Distance distance, double speed) {
+        frontLeft.setTargetPosition(frontLeft.getCurrentPosition() - distance.toEncoderTicks());
+        frontRight.setTargetPosition(frontRight.getCurrentPosition() - distance.toEncoderTicks());
+        backLeft.setTargetPosition(backLeft.getCurrentPosition() + distance.toEncoderTicks());
+        backRight.setTargetPosition(backRight.getCurrentPosition() + distance.toEncoderTicks());
+
+        frontLeft.setPower(speed);
+        frontRight.setPower(speed);
+        backLeft.setPower(speed);
+        backRight.setPower(speed);
+    }
+
+    @Override
     public void beginRotation(Angle angle, double speed) {
         frontLeft.setTargetPosition(frontLeft.getCurrentPosition() - angle.toEncoderTicks()); // Note negative
         frontRight.setTargetPosition(frontRight.getCurrentPosition() - angle.toEncoderTicks());

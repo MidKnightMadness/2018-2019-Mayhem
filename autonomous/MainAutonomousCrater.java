@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.autonomous;
 import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.RobotLog;
@@ -82,10 +83,11 @@ public class MainAutonomousCrater extends LinearOpMode {
         d.beginRotation(Angle.fromDegrees(-90), 0.6);
         telemetry.addLine("ROTATE");
         telemetry.update();
-        Thread.sleep(1000);
+        Thread.sleep(3000);
         Visual.MineralPosition pos = v.findGoldMineral();
         telemetry.addLine(pos.toString());
         Thread.sleep(100);
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -98,9 +100,8 @@ public class MainAutonomousCrater extends LinearOpMode {
         }).start();
         telemetry.addLine("CLOSE");
         telemetry.update();
-        /*d.beginTranslation(Distance.fromInches(15),1);
-        d.beginTranslationSide(Distance.fromInches(17),1);*/
-        d.beginTranslation(Distance.fromInches(6), 0.4);
+
+        d.beginTranslationSide(Distance.fromInches(6), 0.4);
         telemetry.addLine("MOVE UP");
         telemetry.update();
         d.beginRotation(Angle.fromDegrees(-5), 0.4);
@@ -108,64 +109,45 @@ public class MainAutonomousCrater extends LinearOpMode {
         telemetry.addLine("ADJUSTED");
         telemetry.update();
         Thread.sleep(1000);
-        int MINERAL_DISTANCE = 0;
+        int MINERAL_DISTANCE;
         if(pos == Visual.MineralPosition.LEFT){
-            MINERAL_DISTANCE = 0;
+            MINERAL_DISTANCE = 6;
 
         } else if (pos == Visual.MineralPosition.CENTER){
             MINERAL_DISTANCE = -12;
 
         } else {
-            MINERAL_DISTANCE = -29;
+            MINERAL_DISTANCE = -24;
 
         }
-        MINERAL_DISTANCE = -29;
 
         d.beginTranslation(Distance.fromInches(MINERAL_DISTANCE), 0.4);
         telemetry.addLine("MOVING TO MINERAL");
         telemetry.update();
         while (!isStopRequested() && d.isBusy());
 
-        /* (variables for the old mineral detection code
-        int IS_GOLD = 0;
-        int GOLD_FOUND = 0;
-        int encoder = 0;*/
 
-        /* (This is the old mineral detection stuff)
-
-        d.beginTranslation(Distance.fromInches(-40), 0.2);
-        telemetry.addLine("MOVING ALONG MINERALS");
-        telemetry.update();
-
-
-        while (d.isBusy()){
-            IS_GOLD = v.isGoldMineral(true);
-            telemetry.addData("Is Gold? ", IS_GOLD);
-            if((GOLD_FOUND == 0) && (IS_GOLD == 1)){
-                GOLD_FOUND = 1;
-                encoder = d.frontLeft.getCurrentPosition();
-            } else if ((GOLD_FOUND == 1) && (IS_GOLD != 1)){
-                GOLD_FOUND = -1;
-                encoder = d.frontLeft.getCurrentPosition() - encoder;
-                d.stopBack();
-                break;
-            }
-            telemetry.addData("Gold Status ", GOLD_FOUND);
-            telemetry.addData("Encoder Position", encoder);
-            telemetry.update();
-        }
-        if(GOLD_FOUND != -1){
-
-        } else {
-            telemetry.addData("Gold Distance ", encoder);
-            telemetry.update();
-            d.beginTranslation(Distance.fromEncoderTicks(encoder).subtract(Distance.fromInches(6)), 0.5);
-            while (!isStopRequested() && d.isBusy());
-        }*/
-        d.beginRotation(Angle.fromDegrees(90), 1);
-        while (!isStopRequested() && d.isBusy());
-        d.beginTranslation(Distance.fromInches(14), 0.5);
+        d.beginTranslationSide(Distance.fromInches(14), 0.5);
         Thread.sleep(1000);
+
+        d.beginTranslationSide(Distance.fromInches(-14), 0.5);
+        telemetry.addLine("MOVE OUT");
+        telemetry.update();
+        Thread.sleep(1000);
+
+        d.beginTranslation(Distance.fromInches(-MINERAL_DISTANCE+100), 0.4);
+        telemetry.addLine("MOVE BACK");
+        telemetry.update();
+        Thread.sleep(1000);
+        d.beginRotation(Angle.fromDegrees(-45), 0.6);
+        telemetry.addLine("ROTATE");
+        telemetry.update();
+        Thread.sleep(500);
+        d.beginTranslation(Distance.fromInches(120), 1);
+        telemetry.addLine("CHARGING");
+        telemetry.update();
+        Thread.sleep(5000);
+
         m.rotate();
         d.stop();
         v.stop();

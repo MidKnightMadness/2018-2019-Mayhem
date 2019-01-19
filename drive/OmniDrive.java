@@ -83,6 +83,11 @@ public class OmniDrive extends Drive {
     }
 
     @Override
+    public void beginTranslationDiagonal(Distance distance, double speed) {
+
+    }
+
+    @Override
     public void beginRotation(Angle rotation, double speed) {
 
     }
