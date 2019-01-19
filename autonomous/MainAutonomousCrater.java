@@ -39,11 +39,12 @@ import org.firstinspires.ftc.teamcode.visual.Visual;
 
 @Autonomous                                                 // Comment out annotation to remove from list on Driver Station
 public class MainAutonomousCrater extends LinearOpMode {
+
+
     @Override
     public void runOpMode() throws InterruptedException {   // This method is run by the OpMode Manager on init until the stop button is pressed.
         telemetry.addLine("HI IM ALIVE");
         telemetry.update();
-
         Drive d = AssemblyManager.newInstance(Drive.class, hardwareMap, telemetry); // Initialize all Assemblies required during the Autonomous program by the interface
         Visual v = AssemblyManager.newInstance(Visual.class, hardwareMap, telemetry);
         final PullUp p = AssemblyManager.newInstance(PullUp.class, hardwareMap, telemetry);
@@ -53,26 +54,37 @@ public class MainAutonomousCrater extends LinearOpMode {
         MineralArm m = AssemblyManager.newInstance(MineralArm.class, hardwareMap, telemetry);
 
         waitForStart();
+        v.startTfod();
         p.open(); // Lower bot from hanging position
         d.backward();// Wait for Start Button
         Thread.sleep(200);
-        telemetry.addLine("LOWERED");
+        telemetry.addLine("Moving back");
         telemetry.update();
         d.stopBack();
-        telemetry.addLine("LOWERED2");
+        telemetry.addLine("Stopping");
         telemetry.update();
         Thread.sleep(500);
-        telemetry.addLine("LOWERED3");
+        telemetry.addLine("Sleeping");
         telemetry.update();
         d.beginTranslationSide(Distance.fromInches(-4),0.5);
-        telemetry.addLine("LOWERED4");
+        telemetry.addLine("Moving to side");
         telemetry.update();
+
         while (d.isBusy() && !isStopRequested()) {
             telemetry.update();
         }
         telemetry.addData("Stop", isStopRequested());
         telemetry.update();
-        telemetry.addLine("MOVED 2");
+        d.beginTranslation(Distance.fromInches(8), 0.4);
+        telemetry.addLine("MOVE UP");
+        telemetry.update();
+        Thread.sleep(1000);
+        d.beginRotation(Angle.fromDegrees(-90), 0.6);
+        telemetry.addLine("ROTATE");
+        telemetry.update();
+        Thread.sleep(1000);
+        Visual.MineralPosition pos = v.findGoldMineral();
+        telemetry.addLine(pos.toString());
         Thread.sleep(100);
         new Thread(new Runnable() {
             @Override
@@ -84,32 +96,47 @@ public class MainAutonomousCrater extends LinearOpMode {
                 }
             }
         }).start();
-        telemetry.addLine("RAISE");
+        telemetry.addLine("CLOSE");
         telemetry.update();
         /*d.beginTranslation(Distance.fromInches(15),1);
         d.beginTranslationSide(Distance.fromInches(17),1);*/
-        d.beginTranslation(Distance.fromInches(14), 0.4);
+        d.beginTranslation(Distance.fromInches(6), 0.4);
         telemetry.addLine("MOVE UP");
         telemetry.update();
-        Thread.sleep(1000);
-        d.beginTranslationSide(Distance.fromInches(-20), 0.4);
-        telemetry.addLine("MOVE LEFT");
-        telemetry.update();
-        Thread.sleep(1000);
-        d.beginRotation(Angle.fromDegrees(-90), 0.6);
-        telemetry.addLine("ROTATE");
-        telemetry.update();
-        Thread.sleep(1000);
-        int IS_GOLD = 0;
-        int GOLD_FOUND = 0;
-        int encoder = 0;
         d.beginRotation(Angle.fromDegrees(-5), 0.4);
         while (!isStopRequested() && d.isBusy());
-        d.beginTranslationSide(Distance.fromInches(-4), 0.4);
+        telemetry.addLine("ADJUSTED");
+        telemetry.update();
+        Thread.sleep(1000);
+        int MINERAL_DISTANCE = 0;
+        if(pos == Visual.MineralPosition.LEFT){
+            MINERAL_DISTANCE = 0;
+
+        } else if (pos == Visual.MineralPosition.CENTER){
+            MINERAL_DISTANCE = -12;
+
+        } else {
+            MINERAL_DISTANCE = -29;
+
+        }
+        MINERAL_DISTANCE = -29;
+
+        d.beginTranslation(Distance.fromInches(MINERAL_DISTANCE), 0.4);
+        telemetry.addLine("MOVING TO MINERAL");
+        telemetry.update();
         while (!isStopRequested() && d.isBusy());
+
+        /* (variables for the old mineral detection code
+        int IS_GOLD = 0;
+        int GOLD_FOUND = 0;
+        int encoder = 0;*/
+
+        /* (This is the old mineral detection stuff)
+
         d.beginTranslation(Distance.fromInches(-40), 0.2);
         telemetry.addLine("MOVING ALONG MINERALS");
         telemetry.update();
+
 
         while (d.isBusy()){
             IS_GOLD = v.isGoldMineral(true);
@@ -134,13 +161,14 @@ public class MainAutonomousCrater extends LinearOpMode {
             telemetry.update();
             d.beginTranslation(Distance.fromEncoderTicks(encoder).subtract(Distance.fromInches(6)), 0.5);
             while (!isStopRequested() && d.isBusy());
-        }
+        }*/
         d.beginRotation(Angle.fromDegrees(90), 1);
         while (!isStopRequested() && d.isBusy());
-        d.beginTranslation(Distance.fromInches(20), 0.5);
+        d.beginTranslation(Distance.fromInches(14), 0.5);
         Thread.sleep(1000);
         m.rotate();
         d.stop();
+        v.stop();
     }
 
 

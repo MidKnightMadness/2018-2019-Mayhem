@@ -82,6 +82,9 @@ public class TankDrive extends Drive {
                 while (ato && !Thread.currentThread().isInterrupted()){
                     telemetry.addData("ato", ato);
                     telemetry.update();
+                    try {
+                        Thread.sleep(250);
+                    } catch (Exception e) {}
                 }
             }
         });

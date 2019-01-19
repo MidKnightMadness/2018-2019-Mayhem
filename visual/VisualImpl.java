@@ -98,6 +98,11 @@ public class VisualImpl extends Visual {
         // Unable to use Vuforia Targets for minerals :(
     }
 
+    @Override
+    public void startTfod() {
+
+    }
+
     public int isGoldMineral(boolean save) throws InterruptedException {
         return isGoldMineral(save, -1, -1);
     }
