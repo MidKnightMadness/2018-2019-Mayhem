@@ -48,86 +48,65 @@ public class MainAutonomousDepot extends LinearOpMode {
         MineralArm m = AssemblyManager.newInstance(MineralArm.class, hardwareMap, telemetry);
 
         waitForStart();
+        v.startTfod();
+
         p.open(); // Lower bot from hanging position
-        d.backward();// Wait for Start Button
-        Thread.sleep(300);
-        telemetry.addLine("LOWERED");
+        d.backward();// Run backward to align bot with lander wall
+        Thread.sleep(200);// wait for bot to be aligned
+        telemetry.addLine("Moving back");
         telemetry.update();
-        d.stopBack();
-        telemetry.addLine("LOWERED2");
-        telemetry.update();
-        Thread.sleep(500);
-        d.beginRotation(Angle.fromDegrees(10),0.5);
-        telemetry.addLine("LOWERED3");
-        telemetry.update();
-        d.beginTranslationSide(Distance.fromInches(-4),0.5);
-        telemetry.addLine("LOWERED4");
+        d.stopBack();//stop moving back
+        telemetry.addLine("Stopping");
         telemetry.update();
         Thread.sleep(500);
-        d.beginRotation(Angle.fromDegrees(5),0.5);
+        telemetry.addLine("Sleeping");
+        telemetry.update();
+        d.beginTranslationSide(Distance.fromInches(-4),0.5);//move away from lander bracket
+        telemetry.addLine("Moving to side");
+        telemetry.update();
+
+        while (d.isBusy() && !isStopRequested()) {
+            telemetry.update();
+        }//wait for drive train to be done moving
         telemetry.addData("Stop", isStopRequested());
         telemetry.update();
-        telemetry.addLine("MOVED 2");
-        Thread.sleep(100);
-        /*d.beginTranslation(Distance.fromInches(15),1);
-        d.beginTranslationSide(Distance.fromInches(17),1);*/
-        d.beginTranslation(Distance.fromInches(20), 0.4);
+        d.beginTranslation(Distance.fromInches(8), 0.4);//move up from lander
         telemetry.addLine("MOVE UP");
         telemetry.update();
         Thread.sleep(1000);
-        d.beginTranslationSide(Distance.fromInches(-17), 0.4);
-        telemetry.addLine("MOVE LEFT");
-        telemetry.update();
-        Thread.sleep(1000);
-        d.beginRotation(Angle.fromDegrees(-90), 1);
+        d.beginRotation(Angle.fromDegrees(-90), 0.6);//turn robot so camera faces minerals
         telemetry.addLine("ROTATE");
         telemetry.update();
-        Thread.sleep(1000);
-        int IS_GOLD = 0;
-        int GOLD_FOUND = 0;
-        int encoder = 0;
-        int TO_CENTER = Distance.fromEncoderTicks(d.frontLeft.getCurrentPosition()).subtract(Distance.fromInches(-25)).toEncoderTicks();
-        d.beginRotation(Angle.fromDegrees(-15), 0.4);
-        while (!isStopRequested() && d.isBusy());
-        d.beginTranslationSide(Distance.fromInches(-4), 0.4);
-        while (!isStopRequested() && d.isBusy());
-        d.beginTranslation(Distance.fromInches(10), 0.4);
-        while (!isStopRequested() && d.isBusy());
-        d.beginTranslation(Distance.fromInches(-45), 0.4);
-        telemetry.addLine("MOVING ALONG MINERALS");
+        Thread.sleep(3000);
+        Visual.MineralPosition pos = v.findGoldMineral();//use visual to find mineral
+        telemetry.addLine(pos.toString());//make telemetry tell us where the mineral is
+        Thread.sleep(100);
+
+        d.beginTranslationSide(Distance.fromInches(6), 0.4);//move up more
+        telemetry.addLine("MOVE UP");
         telemetry.update();
-
-        while (d.isBusy()){
-            IS_GOLD = v.isGoldMineral(true);
-            telemetry.addData("Is Gold? ", IS_GOLD);
-            if((GOLD_FOUND == 0) && (IS_GOLD == 1)) {
-                GOLD_FOUND = 1;
-                encoder = d.frontLeft.getCurrentPosition();
-            } else if ((GOLD_FOUND == 1) && (IS_GOLD != 1)){
-                GOLD_FOUND = -1;
-                encoder = d.frontLeft.getCurrentPosition() - encoder;
-                TO_CENTER = d.frontLeft.getCurrentPosition() - TO_CENTER;
-                d.stopBack();
-                break;
-            }
-            telemetry.addData("Gold Status ", GOLD_FOUND);
-            telemetry.addData("Encoder Position", encoder);
-            telemetry.update();
-        }
-        if(GOLD_FOUND != -1){
-            d.beginTranslation(Distance.fromEncoderTicks(20), 0.5);
-            while (!isStopRequested() && d.isBusy());
-            TO_CENTER = d.frontLeft.getCurrentPosition() - TO_CENTER;
-        } else {
-
-            telemetry.addData("Gold Distance ", encoder);
-            telemetry.update();
-            d.beginTranslation(Distance.fromEncoderTicks(encoder).subtract(Distance.fromInches(6)), 0.5);
-            while (!isStopRequested() && d.isBusy());
-        }
-        d.beginRotation(Angle.fromDegrees(90), 1);
+        d.beginRotation(Angle.fromDegrees(-5), 0.4);//adjust bot angle
         while (!isStopRequested() && d.isBusy());
-        d.beginTranslation(Distance.fromInches(35), 0.5);
+        telemetry.addLine("ADJUSTED");
+        telemetry.update();
+        Thread.sleep(1000);
+        int MINERAL_DISTANCE;
+        if(pos == Visual.MineralPosition.LEFT){
+            MINERAL_DISTANCE = 6;
+
+        } else if (pos == Visual.MineralPosition.CENTER){
+            MINERAL_DISTANCE = -12;
+
+        } else {
+            MINERAL_DISTANCE = -24;
+
+        }//if/elif/else decides where to go depending on where the bot thinks gold is
+
+        d.beginTranslation(Distance.fromInches(MINERAL_DISTANCE), 0.5);//move to gold mineral
+        telemetry.addLine("MOVING TO MINERAL");
+        telemetry.update();
+        while (!isStopRequested() && d.isBusy());
+        d.beginTranslation(Distance.fromInches(35), 0.5);//pushes mineral
         Thread.sleep(2000);
 
         /*d.beginRotation(Angle.fromDegrees(45), 1);
@@ -135,7 +114,7 @@ public class MainAutonomousDepot extends LinearOpMode {
         d.beginTranslationSide(Distance.fromInches(-24), 0.6);
         Thread.sleep(3000);
         d.beginTranslation(Distance.fromInches(0), 0.6);*/
-        d.beginTranslationSide(Distance.fromEncoderTicks(-TO_CENTER).subtract(Distance.fromInches(0)), 0.4);
+        d.beginTranslation(Distance.fromInches(-MINERAL_DISTANCE).subtract(Distance.fromInches(0)), 0.4);//moves to center
         while (!isStopRequested() && d.isBusy());
         //d.beginTranslation(Distance.fromInches(20), 0.7);
         //Thread.sleep(2000);
@@ -149,21 +128,21 @@ public class MainAutonomousDepot extends LinearOpMode {
                     telemetry.addLine(e.getMessage());
                 }
             }
-        });
-        drop.start();
+        });//creates a thread that closes the pullup arm while the robot keeps moving
+        drop.start();//then start the thread
         telemetry.addLine("CLOSE");
-        telemetry.addData("TOCENTER", TO_CENTER);
+        telemetry.addData("MINERAL DISTANCE ", MINERAL_DISTANCE);
         telemetry.update();
         Thread.sleep(3000);
-        d.beginRotation(Angle.fromDegrees(-25), 0.6);
+        d.beginRotation(Angle.fromDegrees(-25), 0.6);//shakes the bot quickly so that the marker drops
         Thread.sleep(200);
-        d.beginRotation(Angle.fromDegrees(50),0.6);
+        d.beginRotation(Angle.fromDegrees(50),0.6);//shaking
         Thread.sleep(200);
-        d.beginRotation(Angle.fromDegrees(-50), 0.6);
+        d.beginRotation(Angle.fromDegrees(-50), 0.6);//shaking
         Thread.sleep(200);
-        d.beginRotation(Angle.fromDegrees(25),0.6);
+        d.beginRotation(Angle.fromDegrees(25),0.6);//shaking
         Thread.sleep(200);
-        drop.join();
+        drop.join();//stops the thread that was closing the arm
     }
 
 
