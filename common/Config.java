@@ -18,7 +18,7 @@ public final class Config {
     }
 
     public static final class Hand {     // Hand Assembly Configuration
-        public static final String HAND_SERVO = "hand servo";
+        public static final String HAND_MOTOR = "hand motor";//Hub 1: 3
 
     }
 

@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.hand;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.common.Config;
 @TeleOp
+@Disabled
 public class Shovel extends Hand {
 
     private Servo tiltServo;
@@ -21,7 +23,7 @@ public class Shovel extends Hand {
     @Override
     public void init() {
         //Points tiltServo to the Servo in class Config
-        tiltServo = hardwareMap.servo.get(Config.Hand.HAND_SERVO);
+        //tiltServo = hardwareMap.servo.get(Config.Hand.HAND_SERVO);
         //Tilts the hand to the Center Position
         tiltHand(TILT_CENTER);
     }
