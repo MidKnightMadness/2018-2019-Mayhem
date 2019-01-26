@@ -92,18 +92,7 @@ public class MainAutonomousCrater extends LinearOpMode {
         while (d.isBusy() && !isStopRequested());
         Thread.sleep(100);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    p.close();
-                } catch (InterruptedException e) {
-                    telemetry.addLine(e.getMessage());
-                }
-            }
-        }).start();//creates a thread that closes the pullup arm while the robot keeps moving
-        telemetry.addLine("CLOSE");
-        telemetry.update();
+
 
         d.beginTranslationSide(Distance.fromInches(6), 0.4);//move up more
         telemetry.addLine("MOVE UP");
@@ -147,11 +136,32 @@ public class MainAutonomousCrater extends LinearOpMode {
         telemetry.addLine("ROTATE");
         telemetry.update();
         Thread.sleep(500);
-        d.beginTranslation(Distance.fromInches(120), 1);//quickly move towards depot
+        Thread drop = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    p.drop();
+                } catch (InterruptedException e) {
+                    telemetry.addLine(e.getMessage());
+                }
+            }
+        });//creates a thread that closes the pullup arm while the robot keeps moving
+        telemetry.addLine("CLOSE");
+        telemetry.update();
+        d.beginTranslationAngled(Distance.fromInches(60), 1, 1);//quickly move towards depot
         telemetry.addLine("CHARGING");
         telemetry.update();
         Thread.sleep(5000);
-        //unfinished
+        d.beginRotation(Angle.fromDegrees(-25), 0.6);//shakes the bot quickly so that the marker drops
+        Thread.sleep(200);
+        d.beginRotation(Angle.fromDegrees(50),0.6);//shaking
+        Thread.sleep(200);
+        d.beginRotation(Angle.fromDegrees(-50), 0.6);//shaking
+        Thread.sleep(200);
+        d.beginRotation(Angle.fromDegrees(25),0.6);//shaking
+        Thread.sleep(200);
+        drop.join();//stops the thread that was closing the arm
+        d.beginTranslationAngled(Distance.fromInches(-60), 1, 1);//quickly run back
 
         m.rotate();
         d.stop();

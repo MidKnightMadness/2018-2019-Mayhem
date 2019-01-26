@@ -36,5 +36,7 @@ public abstract class Drive extends OpMode {
 
     public abstract boolean isBusy();
     public abstract void stop();
+
+    public abstract void beginTranslationAngled(Distance distance, int sign, double speed);
 }
 
