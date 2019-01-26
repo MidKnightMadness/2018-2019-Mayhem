@@ -177,7 +177,7 @@ public class AngularPullUp extends PullUp {
             state = State.CLOSING;
             subState = 0;
         } else if (gamepad1.x) {
-            state = State.RESETTING;
+            state = State.RESETTING;//?
             subState = 0;
         }
     }

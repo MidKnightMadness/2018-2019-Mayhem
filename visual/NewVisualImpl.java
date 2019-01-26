@@ -15,17 +15,10 @@ import com.vuforia.Vuforia;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.internal.android.dex.util.FileUtils;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 
 import java.io.File;
-import java.io.FileDescriptor;
 import java.io.FileOutputStream;
-
-import static org.firstinspires.ftc.teamcode.visual.Visual.MineralPosition.CENTER;
-import static org.firstinspires.ftc.teamcode.visual.Visual.MineralPosition.LEFT;
-import static org.firstinspires.ftc.teamcode.visual.Visual.MineralPosition.RIGHT;
-import static org.firstinspires.ftc.teamcode.visual.Visual.MineralPosition.UNKNOWN;
 
 /**
  * Visual Assembly adapted from last year's code
@@ -36,7 +29,7 @@ import static org.firstinspires.ftc.teamcode.visual.Visual.MineralPosition.UNKNO
  */
 
 @TeleOp
-public class VisualImpl extends Visual {
+public class NewVisualImpl extends Visual {
 
     private VuforiaLocalizer vuforia;
     private ViewGroup parentView;
@@ -50,7 +43,7 @@ public class VisualImpl extends Visual {
         telemetry.addData("Debug", Visual.DEBUG);
         telemetry.update();
         // Init the VuforiaLocalizer parameters object with the camera View ID
-        final VuforiaLocalizer.Parameters params = new VuforiaLocalizer.Parameters(); // to see the view, add com.qualcomm.ftcrobotcontroller.R.id.cameraMonitorViewId as param
+        VuforiaLocalizer.Parameters params = new VuforiaLocalizer.Parameters(); // to see the view, add com.qualcomm.ftcrobotcontroller.R.id.cameraMonitorViewId as param
 
         // Set the Back camera active
         params.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
@@ -73,13 +66,12 @@ public class VisualImpl extends Visual {
                 @Override
                 public void run() {
                         parentView = (ViewGroup) AppUtil.getInstance().getActivity().findViewById(hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
-                        Log.d("Found Parent View!", parentView.toString());
+                        parentView.removeAllViews();
                         cameraView = new ImageView(AppUtil.getInstance().getApplication().getApplicationContext());
                         Bitmap image = Bitmap.createBitmap(1000, 600, Bitmap.Config.RGB_565);
                         image.eraseColor(Color.GREEN);
                         cameraView.setImageBitmap(image);
                         parentView.addView(cameraView);
-                        Log.d("Created Camera View", "");
                         cameraView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                         cameraView.setRotation(-90);
                         resultView = new ImageView(AppUtil.getInstance().getApplication().getApplicationContext());
@@ -87,7 +79,6 @@ public class VisualImpl extends Visual {
                         parentView.addView(resultView);
                         resultView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                         resultView.setRotation(-90);
-                        Log.d("Created Result View!", "");
                         parentView.setVisibility(View.VISIBLE);
                 }
             });
@@ -115,9 +106,15 @@ public class VisualImpl extends Visual {
         return isGoldMineral(save, -1, -1);
     }
 
+    @Override
     public int isGoldMineral(boolean save, int print_x, int print_y) throws InterruptedException {
+        return -1;
+    }
+
+    public MineralPosition findGoldMineral() throws InterruptedException {
         VuforiaLocalizer.CloseableFrame frame = vuforia.getFrameQueue().take();
-        int isYellow = -1;
+        MineralPosition pos = MineralPosition.UNKNOWN;
+
 
         // One frame contains multiple image formats. Loop through all formats to find RGB565
         for (int i = 0; i < frame.getNumImages(); i++) {
@@ -146,8 +143,9 @@ public class VisualImpl extends Visual {
                 final Bitmap resBmp = Bitmap.createBitmap(outBmp);
                 resBmp.eraseColor(Color.BLACK);
 
-
-                double yellowCount = 1, whiteCount = 1;
+                // Left, Right
+                int[] yellowCount = {1, 1}, whiteCount = {1, 1};
+                boolean[] areYellow = {false, false};
                 double[] hsv = new double[3];
                 for (int y = 0; y < HEIGHT; y++) {
                     for (int x = 0; x < WIDTH; x++) {
@@ -156,37 +154,44 @@ public class VisualImpl extends Visual {
                         if (hsv[0] >= minYellow[0] && hsv[0] <= maxYellow[0] &&
                             hsv[1] >= minYellow[1] && hsv[1] <= maxYellow[1] &&
                             hsv[2] >= minYellow[2] && hsv[2] <= maxYellow[2]) {
-                            yellowCount++;
+                            yellowCount[1 - (x / (WIDTH/2))]++;
                             resBmp.setPixel(x, y, Color.YELLOW);
 
                         } else if (hsv[0] >= minWhite[0] && hsv[0] <= maxWhite[0] &&
                                    hsv[1] >= minWhite[1] && hsv[1] <= maxWhite[1] &&
                                    hsv[2] >= minWhite[2] && hsv[2] <= maxWhite[2]) {
-                            whiteCount++;
+                            whiteCount[1 - (x / (WIDTH/2))]++;
                             resBmp.setPixel(x, y, Color.WHITE);
+                        } else {
+                            if (x < (WIDTH / 2)) {
+                                resBmp.setPixel(x, y, Color.GREEN);
+                            }
                         }
                     }
                 }
 
-                if (yellowCount + whiteCount > 5) {
-                    if (yellowCount / whiteCount > 1) {
-                        isYellow = 1;
-                    } else {
-                        isYellow = 0;
-                    }
+                telemetry.addData("Yellow Left", yellowCount[0]);
+                telemetry.addData("Yellow Right", yellowCount[1]);
+                telemetry.addData("White Left", whiteCount[0]);
+                telemetry.addData("White Right", whiteCount[1]);
+
+                for (int j = 0; j < 2; j++) {
+                    areYellow[j] = (yellowCount[j] / whiteCount[j] > 1);
                 }
 
-                if (print_x != -1 && print_y != -1) {
-                    colorToHSV(outBmp.getPixel(print_x, print_y), hsv);
-                    telemetry.addData("Selected", "H: %3f, S: %3f, V: %3f", hsv[0], hsv[1], hsv[2]);
-                    resBmp.setPixel(print_x, print_y, Color.CYAN);
-                    if (print_x > 0) {outBmp.setPixel(print_x - 1, print_y, Color.CYAN);}
-                    if (print_x < 19) {outBmp.setPixel(print_x + 1, print_y, Color.CYAN);}
-                    if (print_y > 0) {outBmp.setPixel(print_x, print_y - 1, Color.CYAN);}
-                    if (print_y < 11) {outBmp.setPixel(print_x, print_y + 1, Color.CYAN);}
+                // Looking at Left and Center...
+                if (yellowCount[0] + yellowCount[1] + whiteCount[0] + whiteCount[1] < 10) {
+                    pos = MineralPosition.UNKNOWN;
                 }
 
-                //telemetry.update();
+                if (areYellow[0] && areYellow[1]) {
+                    pos = (yellowCount[0] > yellowCount[1] ? MineralPosition.LEFT : MineralPosition.CENTER);
+                } else {
+                    pos = (areYellow[0] ? MineralPosition.LEFT : (areYellow[1] ? MineralPosition.CENTER : MineralPosition.RIGHT));
+                }
+
+                telemetry.addData("The Gold mineral is on the", pos.toString());
+                telemetry.update();
 
 
                 if (Visual.SAVE) {
@@ -218,19 +223,13 @@ public class VisualImpl extends Visual {
                         @Override
                         public void run() {
                             cameraView.setImageBitmap(Bitmap.createScaledBitmap(outBmp, 1000, 600, false));
-                            resultView.setImageBitmap(Bitmap.createScaledBitmap(resBmp, 1000, 600, false));
+                            resultView.setImageBitmap(Bitmap.createScaledBitmap(resBmp, 600, 600, false));
                         }
                     });
                 }
             }
         }
-        telemetry.addData("Is Yellow", isYellow);
-        return isYellow;
-    }
-
-    @Override
-    public MineralPosition findGoldMineral() throws InterruptedException {
-        return null;
+        return pos;
     }
 
     /*private int valueTest(int color) {

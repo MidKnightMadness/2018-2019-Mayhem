@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.common.AssemblyManager.Implementation;
  * Created by Gregory on 9/14/18.
  */
 
-@Implementation(TensorFlowImpl.class)
+@Implementation(NewVisualImpl.class)
 public abstract class Visual extends OpMode {
     public enum MineralPosition {
         LEFT,
@@ -33,8 +33,8 @@ public abstract class Visual extends OpMode {
 
 
     public abstract void init();
-    public abstract void startTfod();
     // 1 = Gold, 0 = Silver, -1 = Unknown
+    public abstract void startTfod();
     public abstract int isGoldMineral(boolean save) throws InterruptedException;
     public abstract int isGoldMineral(boolean save, int print_x, int print_y) throws InterruptedException;
     public abstract MineralPosition findGoldMineral() throws InterruptedException;

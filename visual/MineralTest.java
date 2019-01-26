@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode.visual;
 
+import android.view.ViewGroup;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.common.AssemblyManager;
 
 /**
@@ -19,7 +22,13 @@ public class MineralTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         Visual.DEBUG = true;
-        Visual v = AssemblyManager.newInstance(Visual.class, hardwareMap, telemetry); // Initialize the Visual Assembly
+        //ViewGroup parentView = (ViewGroup) AppUtil.getInstance().getActivity().findViewById(hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName()));
+
+
+        Visual v = new NewVisualImpl();
+        v.hardwareMap = hardwareMap;
+        v.telemetry = telemetry;
+        v.init();
 
         waitForStart();                                       // Wait for Start
 

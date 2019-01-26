@@ -14,7 +14,7 @@ public class ServoTest extends OpMode {
 
     @Override
     public void start() {
-        servo.setPower(-1);
+        servo.setPower(1);
         telemetry.addLine("running?");
         telemetry.update();
     }

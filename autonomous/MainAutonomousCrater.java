@@ -55,7 +55,7 @@ public class MainAutonomousCrater extends LinearOpMode {
         MineralArm m = AssemblyManager.newInstance(MineralArm.class, hardwareMap, telemetry);
 
         waitForStart();
-        v.startTfod();
+        //v.startTfod();
         p.open(); // Lower bot from hanging position
         d.backward();// Run backward to align bot with lander wall
         Thread.sleep(200);// wait for bot to be aligned
@@ -71,21 +71,25 @@ public class MainAutonomousCrater extends LinearOpMode {
         telemetry.addLine("Moving to side");
         telemetry.update();
 
-        while (d.isBusy() && !isStopRequested()) {
-            telemetry.update();
-        }//wait for drive train to be done moving
+        while (d.isBusy() && !isStopRequested()); //wait for drive train to be done moving
         telemetry.addData("Stop", isStopRequested());
         telemetry.update();
         d.beginTranslation(Distance.fromInches(8), 0.4);//move up from lander
         telemetry.addLine("MOVE UP");
         telemetry.update();
         Thread.sleep(1000);
-        d.beginRotation(Angle.fromDegrees(-90), 0.6);//turn robot so camera faces minerals
+        d.beginRotation(Angle.fromDegrees(-86), 0.6);//turn robot so camera faces minerals
         telemetry.addLine("ROTATE");
         telemetry.update();
-        Thread.sleep(3000);
-        Visual.MineralPosition pos = v.findGoldMineral();//use visual to find mineral
-        telemetry.addLine(pos.toString());//make telemetry tell us where the mineral is
+        double waitUntil = getRuntime() + 3;
+        Visual.MineralPosition pos = Visual.MineralPosition.UNKNOWN;
+        d.beginRotation(Angle.fromDegrees(-9), 0.4);
+        while (pos == Visual.MineralPosition.UNKNOWN && d.isBusy() && !isStopRequested()) {
+            Thread.sleep(250);
+            pos = v.findGoldMineral();//use visual to find mineral
+            telemetry.addLine(pos.toString());//make telemetry tell us where the mineral is
+        }
+        while (d.isBusy() && !isStopRequested());
         Thread.sleep(100);
 
         new Thread(new Runnable() {
@@ -104,7 +108,7 @@ public class MainAutonomousCrater extends LinearOpMode {
         d.beginTranslationSide(Distance.fromInches(6), 0.4);//move up more
         telemetry.addLine("MOVE UP");
         telemetry.update();
-        d.beginRotation(Angle.fromDegrees(-5), 0.4);//adjust bot angle
+        //d.beginRotation(Angle.fromDegrees(-5), 0.4);//adjust bot angle
         while (!isStopRequested() && d.isBusy());
         telemetry.addLine("ADJUSTED");
         telemetry.update();
