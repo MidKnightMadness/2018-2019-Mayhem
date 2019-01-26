@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -234,5 +236,14 @@ public class TankDrive extends Drive {
         } catch (Exception e) {
 
         }
+        Log.d("STOPPING THREAD", "YAY!");
+        Log.d("STOPPING THREAD", "YAY!");
+        Log.d("STOPPING THREAD", "YAY!");
+        Log.d("STOPPING THREAD", "YAY!");
+        Log.d("STOPPING THREAD", "YAY!");
+        Log.d("STOPPING THREAD", "YAY!");
+        Log.d("STOPPING THREAD", "YAY!");
+        Log.d("STOPPING THREAD", "YAY!");
+
     }
 }
