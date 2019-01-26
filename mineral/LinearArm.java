@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.mineral;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.MotorControlAlgorithm;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -30,6 +31,7 @@ public class LinearArm extends MineralArm {
 
         rotateMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rotateMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rotateMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         //rotateMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(15, 0, 1, 0, MotorControlAlgorithm.PIDF));
         //rotateMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION,   new PIDFCoefficients(15, 0, 0,0, MotorControlAlgorithm.PIDF));
         //rotateMotor.setTargetPosition(0);

@@ -121,7 +121,7 @@ public class MainAutonomousCrater extends LinearOpMode {
         Thread.sleep(100);
 
 
-        d.beginTranslationSide(Distance.fromInches(12), 0.7);//pushes mineral
+        d.beginTranslationSide(Distance.fromInches(14), 0.7);//pushes mineral
         Thread.sleep(1000);
 
         d.beginTranslationSide(Distance.fromInches(-9), 0.7);//moves back from mineral
@@ -129,15 +129,15 @@ public class MainAutonomousCrater extends LinearOpMode {
         telemetry.update();
         Thread.sleep(1000);
 
-        d.beginTranslation(Distance.fromInches(-MINERAL_DISTANCE+32), 0.7);//moves to field wall
+        d.beginTranslation(Distance.fromInches(-MINERAL_DISTANCE+27), 0.7);//moves to field wall
         telemetry.addLine("MOVE BACK");
         telemetry.update();
         while (!isStopRequested() && d.isBusy());
         Thread.sleep(100);
-        d.beginRotation(Angle.fromDegrees(-45), 0.6);//turn to align with field wall
+        d.beginRotation(Angle.fromDegrees(-30), 0.6);//turn to align with field wall
         telemetry.addLine("ROTATE");
         telemetry.update();
-        Thread.sleep(500);
+        while (!isStopRequested() && d.isBusy());
         Thread drop = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -151,23 +151,15 @@ public class MainAutonomousCrater extends LinearOpMode {
         drop.start();
         telemetry.addLine("CLOSE");
         telemetry.update();
-        d.beginTranslationSide(Distance.fromInches(10), 0.6);
-        Thread.sleep(10000);
-        /*d.beginTranslationAngled(Distance.fromInches(60), 1, 1);//quickly move towards depot
+        d.beginTranslationSide(Distance.fromInches(20), 0.4);
+        Thread.sleep(2000);
+        d.beginTranslationAngled(Distance.fromInches(45), 5, 1);//quickly move towards depot
         telemetry.addLine("CHARGING");
         telemetry.update();
-        Thread.sleep(5000);
-        d.beginRotation(Angle.fromDegrees(-25), 0.6);//shakes the bot quickly so that the marker drops
-        Thread.sleep(200);
-        d.beginRotation(Angle.fromDegrees(50),0.6);//shaking
-        Thread.sleep(200);
-        d.beginRotation(Angle.fromDegrees(-50), 0.6);//shaking
-        Thread.sleep(200);
-        d.beginRotation(Angle.fromDegrees(25),0.6);//shaking
-        Thread.sleep(200);
+        Thread.sleep(3000);
         drop.join();//stops the thread that was closing the arm
-        d.beginTranslationAngled(Distance.fromInches(-60), 1, 1);//quickly run back
-*/
+        d.beginTranslationAngled(Distance.fromInches(-60), 1, 0.7);//quickly run back
+        while (!isStopRequested() && d.isBusy());
         //m.rotate();
         d.stop();
         v.stop();
