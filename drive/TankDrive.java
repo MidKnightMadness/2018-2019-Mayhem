@@ -164,10 +164,10 @@ public class TankDrive extends Drive {
     }
 
     public void beginTranslationAngled(Distance distance, int sign, double speed) {
-        frontLeft.setTargetPosition(frontLeft.getCurrentPosition() - distance.toEncoderTicks() - (int)Math.round(sign*Math.tan(5))*distance.toEncoderTicks());
-        frontRight.setTargetPosition(frontRight.getCurrentPosition() + distance.toEncoderTicks() - (int)Math.round(sign*Math.tan(5))*distance.toEncoderTicks());
-        backLeft.setTargetPosition(backLeft.getCurrentPosition() - distance.toEncoderTicks() + (int)Math.round(sign*Math.tan(5))*distance.toEncoderTicks());
-        backRight.setTargetPosition(backRight.getCurrentPosition() + distance.toEncoderTicks() + (int)Math.round(sign*Math.tan(5))*distance.toEncoderTicks());
+        frontLeft.setTargetPosition(frontLeft.getCurrentPosition() - distance.toEncoderTicks() - (int)Math.round(sign*Math.tan(Math.toRadians(5)))*distance.toEncoderTicks());
+        frontRight.setTargetPosition(frontRight.getCurrentPosition() + distance.toEncoderTicks() - (int)Math.round(sign*Math.tan(Math.toRadians(5)))*distance.toEncoderTicks());
+        backLeft.setTargetPosition(backLeft.getCurrentPosition() - distance.toEncoderTicks() + (int)Math.round(sign*Math.tan(Math.toRadians(5)))*distance.toEncoderTicks());
+        backRight.setTargetPosition(backRight.getCurrentPosition() + distance.toEncoderTicks() + (int)Math.round(sign*Math.tan(Math.toRadians(5)))*distance.toEncoderTicks());
 
         frontLeft.setPower(-speed);
         frontRight.setPower(speed);

@@ -179,7 +179,7 @@ public class OmniDrive extends Drive {
     public void stop() {}
 
     @Override
-    public void beginTranslationAngled(Distance distance, int i, double i1) {
+    public void beginTranslationSide(Distance distance, int i, double i1) {
 
     }
 }

@@ -143,6 +143,9 @@ public class MainAutonomousDepot extends LinearOpMode {
         d.beginRotation(Angle.fromDegrees(25),0.6);//shaking
         Thread.sleep(200);
         drop.join();//stops the thread that was closing the arm
+
+        d.stop();
+        v.stop();
     }
 
 
