@@ -79,6 +79,8 @@ public class TankDrive extends Drive {
         send = new Thread(new Runnable() {
             public void run() {
                 ato = true;
+                telemetry.setAutoClear(false);
+
                 while (ato && !Thread.currentThread().isInterrupted()){
                     telemetry.addData("ato", ato);
                     telemetry.update();

@@ -179,15 +179,10 @@ public class NewVisualImpl extends Visual {
                     areYellow[j] = (yellowCount[j] / whiteCount[j] > 1);
                 }
 
-                // Looking at Left and Center...
-                if (yellowCount[0] + yellowCount[1] + whiteCount[0] + whiteCount[1] < 10) {
-                    pos = MineralPosition.UNKNOWN;
-                }
-
                 if (areYellow[0] && areYellow[1]) {
                     pos = (yellowCount[0] > yellowCount[1] ? MineralPosition.LEFT : MineralPosition.CENTER);
                 } else {
-                    pos = (areYellow[0] ? MineralPosition.LEFT : (areYellow[1] ? MineralPosition.CENTER : MineralPosition.RIGHT));
+                    pos = (areYellow[0] ? MineralPosition.LEFT : (areYellow[1] ? MineralPosition.CENTER : ((yellowCount[0] + whiteCount[0] < 5 || yellowCount[1] + whiteCount[1] < 5) ? MineralPosition.UNKNOWN : MineralPosition.RIGHT)));
                 }
 
                 telemetry.addData("The Gold mineral is on the", pos.toString());

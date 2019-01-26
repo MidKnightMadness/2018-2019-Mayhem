@@ -81,6 +81,7 @@ public class MainAutonomousCrater extends LinearOpMode {
         d.beginRotation(Angle.fromDegrees(-86), 0.6);//turn robot so camera faces minerals
         telemetry.addLine("ROTATE");
         telemetry.update();
+        while (d.isBusy() && !isStopRequested());
         double waitUntil = getRuntime() + 3;
         Visual.MineralPosition pos = Visual.MineralPosition.UNKNOWN;
         d.beginRotation(Angle.fromDegrees(-9), 0.4);
@@ -101,16 +102,15 @@ public class MainAutonomousCrater extends LinearOpMode {
         while (!isStopRequested() && d.isBusy());
         telemetry.addLine("ADJUSTED");
         telemetry.update();
-        Thread.sleep(1000);
         int MINERAL_DISTANCE;
-        if(pos == Visual.MineralPosition.LEFT){
-            MINERAL_DISTANCE = 6;
+        if(pos == Visual.MineralPosition.LEFT || pos == Visual.MineralPosition.UNKNOWN){
+            MINERAL_DISTANCE = 8;
 
         } else if (pos == Visual.MineralPosition.CENTER){
-            MINERAL_DISTANCE = -12;
+            MINERAL_DISTANCE = -6;
 
         } else {
-            MINERAL_DISTANCE = -24;
+            MINERAL_DISTANCE = -22;
 
         }//if/elif/else decides where to go depending on where the bot thinks gold is
 
@@ -118,6 +118,7 @@ public class MainAutonomousCrater extends LinearOpMode {
         telemetry.addLine("MOVING TO MINERAL");
         telemetry.update();
         while (!isStopRequested() && d.isBusy());
+        Thread.sleep(100);
 
 
         d.beginTranslationSide(Distance.fromInches(9), 0.5);//pushes mineral
@@ -128,10 +129,11 @@ public class MainAutonomousCrater extends LinearOpMode {
         telemetry.update();
         Thread.sleep(1000);
 
-        d.beginTranslation(Distance.fromInches(-MINERAL_DISTANCE+100), 0.4);//moves to field wall
+        d.beginTranslation(Distance.fromInches(-MINERAL_DISTANCE+37), 0.4);//moves to field wall
         telemetry.addLine("MOVE BACK");
         telemetry.update();
-        Thread.sleep(1000);
+        while (!isStopRequested() && d.isBusy());
+        Thread.sleep(100);
         d.beginRotation(Angle.fromDegrees(-45), 0.6);//turn to align with field wall
         telemetry.addLine("ROTATE");
         telemetry.update();
@@ -163,7 +165,7 @@ public class MainAutonomousCrater extends LinearOpMode {
         drop.join();//stops the thread that was closing the arm
         d.beginTranslationAngled(Distance.fromInches(-60), 1, 1);//quickly run back
 
-        m.rotate();
+        //m.rotate();
         d.stop();
         v.stop();
     }
