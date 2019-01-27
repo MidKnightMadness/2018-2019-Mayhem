@@ -39,6 +39,8 @@ public class OmniDrive extends Drive {
     private double lastKnownRotation = 0;
     private boolean resettingRotation = false;
     private final int BASE_ROTATION_ANGLE = 45;
+    private boolean slow = false;
+    private boolean bPressed = false;
 
 
     private Angle getIMURotation() {
@@ -121,25 +123,34 @@ public class OmniDrive extends Drive {
     }
 
     public void loop() {
-            if ((gamepad1.a || gamepad2.a)) {
-                resetHeading();
-            }
+        if ((gamepad1.a || gamepad2.a)) {
+            resetHeading();
+        }
         {
             theta = getIMURotation().subtract(startPos);
             adjustedX = gamepad1.left_stick_x;
             adjustedY = gamepad1.left_stick_y;
             adjustedR = gamepad1.right_stick_x;
-            boolean slow = gamepad1.left_stick_button || gamepad1.right_stick_button;
 
-            double translateScale = Math.pow(Math.hypot(adjustedX, adjustedY), 5) * (1 - Math.min(Math.pow(Math.abs(adjustedR), 2), 0.6)) * (slow ? 0.3 : 1);
+            if (gamepad1.y && !bPressed) {
+                bPressed = true;
+                slow = !slow;
+            } else {
+                bPressed = false;
+            }
+
+            boolean slower = gamepad1.left_stick_button || gamepad1.right_stick_button;
+
+            double translateScale = Math.pow(Math.hypot(adjustedX, adjustedY), 5) * (1 - Math.min(Math.pow(Math.abs(adjustedR), 2), 0.6)) * (slow ? 0.3 : 1) * (slower ? 0.3 : 1);
             Angle targetDirection = Angle.aTan(gamepad1.left_stick_x, -gamepad1.left_stick_y);
-            double rotateScale = (Math.pow(Math.abs(adjustedR), 5) * Math.signum(-adjustedR) * (1 - Math.abs(translateScale)) * (slow ? 0.3 : 1));
+            double rotateScale = (Math.pow(Math.abs(adjustedR), 5) * Math.signum(-adjustedR) * (1 - Math.abs(translateScale)) * (slow ? 0.3 : 1) * (slower ? 0.3 : 1));
 
             telemetry.addData("AdjustedR", adjustedR);
             telemetry.addData("Theta", theta.toDegrees());
             telemetry.addData("Target Direction", targetDirection.toDegrees());
 
             telemetry.addData("Rotate Scale", rotateScale);
+            telemetry.addData("SLOW", slow);
             targetDirection.add(theta);
             telemetry.addData("Target Direction", targetDirection.toDegrees());
             telemetry.addData("Motor 0", Math.cos(targetDirection.getRadians()));

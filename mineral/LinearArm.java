@@ -25,21 +25,24 @@ public class LinearArm extends MineralArm {
         //telemetry.addData("DcMotorEx", DcMotorEx.class.isInstance(test));
         //telemetry.update();
         //rotateMotor = (DcMotorEx) test;
-        extendMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        extendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        extendMotor.resetDeviceConfigurationForOpMode();
         rotateMotor.resetDeviceConfigurationForOpMode();
 
+
+        extendMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        extendMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        extendMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         rotateMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rotateMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rotateMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rotateMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rotateMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         //rotateMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(15, 0, 1, 0, MotorControlAlgorithm.PIDF));
         //rotateMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_TO_POSITION,   new PIDFCoefficients(15, 0, 0,0, MotorControlAlgorithm.PIDF));
         //rotateMotor.setTargetPosition(0);
         //rotateMotor.setPower(1);
-        extendMotor.setTargetPosition(0);
-        extendMotor.setPower(1);
-        rotateMotor.setTargetPosition(0);
-        rotateMotor.setPower(1);
+        extendMotor.setPower(0);
+        rotateMotor.setPower(0);
     }
 
     private int currentAngle = 0;
@@ -49,38 +52,64 @@ public class LinearArm extends MineralArm {
 
     @Override
     public void loop() {
-        if (gamepad1.right_trigger > 0) {
-            currentAngle -= gamepad1.right_trigger * 50;
-            if (gamepad1.b) {
-                currentAngleOffset -= gamepad1.right_trigger * 50;
+        if (gamepad2.left_trigger > 0) {
+            if (rotateMotor.getCurrentPosition() - currentAngleOffset < 10600) {
+                rotateMotor.setPower(gamepad2.left_trigger);
+            } else {
+                if (gamepad2.b) {
+                    rotateMotor.setPower(gamepad2.left_trigger);
+                    currentAngleOffset = rotateMotor.getCurrentPosition() - 10600;
+                } else {
+                    rotateMotor.setPower(0);
+                }
             }
-        } else if (gamepad1.left_trigger > 0){
-            currentAngle += gamepad1.left_trigger * 50;
-            if (gamepad1.b) {
-                currentAngleOffset += gamepad1.left_trigger * 50;
+        } else if (gamepad2.right_trigger > 0){
+            if (rotateMotor.getCurrentPosition() - currentAngleOffset > 0) {
+                rotateMotor.setPower(-gamepad2.right_trigger);
+            } else {
+                if (gamepad2.b) {
+                    rotateMotor.setPower(-gamepad2.right_trigger);
+                    currentAngleOffset = rotateMotor.getCurrentPosition();
+                } else {
+                    rotateMotor.setPower(0);
+                }
             }
+        } else {
+            rotateMotor.setPower(0);
         }
 
-        if (gamepad1.right_bumper) {
-            extension += 150;
-            if (gamepad1.b) {
-                currentExtensionOffset += 150;
+        if (gamepad2.right_bumper) {
+            if (extendMotor.getCurrentPosition() - currentExtensionOffset < 10600) {
+                extendMotor.setPower(1);
+            } else {
+                if (gamepad2.b) {
+                    extendMotor.setPower(1);
+                    currentExtensionOffset = extendMotor.getCurrentPosition() - 10600;
+                } else {
+                    extendMotor.setPower(0);
+                }
             }
-        } else if (gamepad1.left_bumper) {
-            extension -= 150;
-            if (gamepad1.b) {
-                currentExtensionOffset -= 150;
+        } else if (gamepad2.left_bumper){
+            if (extendMotor.getCurrentPosition() - currentExtensionOffset > 0) {
+                extendMotor.setPower(-1);
+            } else {
+                if (gamepad2.b) {
+                    extendMotor.setPower(-1);
+                    currentExtensionOffset = extendMotor.getCurrentPosition();
+                } else {
+                    extendMotor.setPower(0);
+                }
             }
+        } else {
+            extendMotor.setPower(0);
         }
 
-        extension = Math.min(Math.max(extension, 0 + currentExtensionOffset), 10600 + currentExtensionOffset);
-        currentAngle = Math.min(Math.max(currentAngle, -2000 + currentAngleOffset), 600 + currentAngleOffset);
-        extendMotor.setTargetPosition(extension);
-        rotateMotor.setTargetPosition(currentAngle);
         //updateRotate();
-        telemetry.addData("Current Angle", currentAngle);
-        telemetry.addData("Extension", extension);
-        telemetry.addData("Current Angle2", rotateMotor.getCurrentPosition());
+        telemetry.addData("Current Angle", rotateMotor.getCurrentPosition());
+        telemetry.addData("Extension", extendMotor.getCurrentPosition());
+        telemetry.addData("Angle Offset", currentAngleOffset);
+        telemetry.addData("Extension Offset", currentExtensionOffset);
+        telemetry.addData("Time", time);
         telemetry.update();
 
         //rotateMotor.setTargetPosition(currentAngle);

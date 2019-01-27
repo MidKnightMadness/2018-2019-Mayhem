@@ -33,6 +33,7 @@ public class AngularPullUp extends PullUp {
         pullUpMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         pullUpMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         pullUpMotor.setTargetPosition(0);
+        pullUpMotor.setPower(0);
 
     }
 

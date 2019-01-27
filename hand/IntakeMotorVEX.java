@@ -11,10 +11,12 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.common.Config;
 
-@TeleOp(name = "VEX Servo Test", group = "Tests")
-public class VEXServoTest extends Hand {
+@TeleOp
+public class IntakeMotorVEX extends Hand {
 
     private DcMotor motor;
+    private boolean on = false;
+    private boolean dpad = false;
 
     public void init() {
         motor = hardwareMap.dcMotor.get(Config.Hand.HAND_MOTOR);
@@ -24,11 +26,25 @@ public class VEXServoTest extends Hand {
     public void start() {}
 
     public void loop() {
-        if (gamepad1.dpad_left) {
+        if (gamepad2.dpad_left && !dpad) {
+            dpad = true;
+            on = !on;
+        } else {
+            dpad = false;
+        }
+
+
+        if (on) {
+            motor.setPower(1);
+        } else {
+            motor.setPower(0);
+        }
+
+        /*if (gamepad2.dpad_left) {
             motor.setPower(-1);
             telemetry.addLine("trying to reverse");
             telemetry.update();
-        } else if (gamepad1.dpad_right) {
+        } else if (gamepad2.dpad_right) {
             motor.setPower(1);
             telemetry.addLine("trying to rotate");
             telemetry.update();
@@ -36,8 +52,8 @@ public class VEXServoTest extends Hand {
             motor.setPower(0);
             telemetry.addLine("trying to brake");
             telemetry.update();
-        }
-        telemetry.update();
+        }*/
+        //telemetry.update();
     }
 
     public void stop() {}
