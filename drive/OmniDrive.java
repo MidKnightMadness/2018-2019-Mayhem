@@ -135,7 +135,7 @@ public class OmniDrive extends Drive {
             if (gamepad1.y && !bPressed) {
                 bPressed = true;
                 slow = !slow;
-            } else {
+            } else if (!gamepad1.y){
                 bPressed = false;
             }
 

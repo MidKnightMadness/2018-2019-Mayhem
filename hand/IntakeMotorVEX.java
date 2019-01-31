@@ -29,13 +29,13 @@ public class IntakeMotorVEX extends Hand {
         if (gamepad2.dpad_left && !dpad) {
             dpad = true;
             on = !on;
-        } else {
+        } else if (!gamepad2.dpad_left){
             dpad = false;
         }
 
 
         if (on) {
-            motor.setPower(1);
+            motor.setPower(-1);
         } else {
             motor.setPower(0);
         }

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.autonomous;
 
 import android.util.Log;
 
+import com.qualcomm.ftccommon.SoundPlayer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -19,6 +20,8 @@ import org.firstinspires.ftc.teamcode.mineral.MineralArm;
 import org.firstinspires.ftc.teamcode.pullup.AngularPullUp;
 import org.firstinspires.ftc.teamcode.pullup.PullUp;
 import org.firstinspires.ftc.teamcode.visual.Visual;
+
+import java.io.File;
 
 /**
  * Main Autonomous: The main autonomous program that will be run during the tournament.
@@ -44,6 +47,7 @@ public class MainAutonomousCrater extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {   // This method is run by the OpMode Manager on init until the stop button is pressed.
+        SoundPlayer.getInstance().preload(hardwareMap.appContext, new File("/storage/self/primary/FoundGold.wav"));
         telemetry.addLine("HI IM ALIVE");
         telemetry.update();
         Drive d = AssemblyManager.newInstance(Drive.class, hardwareMap, telemetry); // Initialize all Assemblies required during the Autonomous program by the interface
@@ -114,6 +118,7 @@ public class MainAutonomousCrater extends LinearOpMode {
 
         }//if/elif/else decides where to go depending on where the bot thinks gold is
 
+
         d.beginTranslation(Distance.fromInches(MINERAL_DISTANCE), 0.7);//move to gold mineral
         telemetry.addLine("MOVING TO MINERAL");
         telemetry.update();
@@ -122,6 +127,7 @@ public class MainAutonomousCrater extends LinearOpMode {
 
 
         d.beginTranslationSide(Distance.fromInches(14), 0.7);//pushes mineral
+        SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, new File("/storage/self/primary/FoundGold.wav"));
         Thread.sleep(1000);
 
         d.beginTranslationSide(Distance.fromInches(-9), 0.7);//moves back from mineral

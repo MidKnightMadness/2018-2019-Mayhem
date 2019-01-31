@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.autonomous;
 
 import android.util.Log;
 
+import com.qualcomm.ftccommon.SoundPlayer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.RobotLog;
@@ -13,6 +14,8 @@ import org.firstinspires.ftc.teamcode.drive.Drive;
 import org.firstinspires.ftc.teamcode.mineral.MineralArm;
 import org.firstinspires.ftc.teamcode.pullup.PullUp;
 import org.firstinspires.ftc.teamcode.visual.Visual;
+
+import java.io.File;
 
 /**
  * Main Autonomous: The main autonomous program that will be run during the tournament.
@@ -35,6 +38,7 @@ import org.firstinspires.ftc.teamcode.visual.Visual;
 @Autonomous                                                 // Comment out annotation to remove from list on Driver Station
 public class MainAutonomousDepot extends LinearOpMode {
     public void runOpMode() throws InterruptedException {   // This method is run by the OpMode Manager on init until the stop button is pressed.
+        SoundPlayer.getInstance().preload(hardwareMap.appContext, new File("/storage/self/primary/FoundGold.wav"));
         telemetry.addLine("HI IM ALIVE");
         telemetry.update();
         Drive d = AssemblyManager.newInstance(Drive.class, hardwareMap, telemetry); // Initialize all Assemblies required during the Autonomous program by the interface
@@ -113,6 +117,9 @@ public class MainAutonomousDepot extends LinearOpMode {
 
 
         d.beginTranslationSide(Distance.fromInches(35), 0.7);//pushes mineral
+        Thread.sleep(1000);
+        SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, new File("/storage/self/primary/FoundGold.wav"));
+
         while (!isStopRequested() && d.isBusy());
 
         if (pos == Visual.MineralPosition.CENTER) {

@@ -140,6 +140,9 @@ public class AngularPullUp extends PullUp {
                 pullUpMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 pullUpMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 pullUpMotor.setTargetPosition(0);
+                if (DEMO) {
+                    pullUpMotor.setPower(0);
+                }
                 state = State.CLOSED;
             }
         } else if (state == State.OPENING) {
@@ -155,6 +158,7 @@ public class AngularPullUp extends PullUp {
                 pullUpMotor.setPower(1);
                 subState = 2;
             } else if (subState == 2 && !pullUpMotor.isBusy()) {
+                pullUpMotor.setPower(0);
                 state = State.OPENED;
             }
         } else if (state == State.RESETTING) {
@@ -171,10 +175,10 @@ public class AngularPullUp extends PullUp {
                 pullUpMotor.setTargetPosition(0);
                 pullUpMotor.setPower(0);
             }
-        } else if (gamepad1.dpad_down && state == State.CLOSED) {
+        } else if ((gamepad1.dpad_down || (gamepad2.dpad_down && DEMO))&& state == State.CLOSED) {
             state = State.OPENING;
             subState = 0;
-        } else if (gamepad1.dpad_up && state == State.OPENED) {
+        } else if ((gamepad1.dpad_up || (gamepad2.dpad_up && DEMO)) && state == State.OPENED) {
             state = State.CLOSING;
             subState = 0;
         } else if (gamepad1.x) {
