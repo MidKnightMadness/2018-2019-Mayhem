@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.common.Angle;
 import org.firstinspires.ftc.teamcode.common.AssemblyManager;
+import org.firstinspires.ftc.teamcode.common.Config;
 import org.firstinspires.ftc.teamcode.common.Distance;
 import org.firstinspires.ftc.teamcode.drive.Drive;
 import org.firstinspires.ftc.teamcode.mineral.MineralArm;
@@ -38,7 +39,7 @@ import java.io.File;
 @Autonomous                                                 // Comment out annotation to remove from list on Driver Station
 public class MainAutonomousDepot extends LinearOpMode {
     public void runOpMode() throws InterruptedException {   // This method is run by the OpMode Manager on init until the stop button is pressed.
-        SoundPlayer.getInstance().preload(hardwareMap.appContext, new File("/storage/self/primary/FoundGold.wav"));
+        SoundPlayer.getInstance().preload(hardwareMap.appContext, new File(Config.SOUND_FILE));
         telemetry.addLine("HI IM ALIVE");
         telemetry.update();
         Drive d = AssemblyManager.newInstance(Drive.class, hardwareMap, telemetry); // Initialize all Assemblies required during the Autonomous program by the interface
@@ -118,7 +119,7 @@ public class MainAutonomousDepot extends LinearOpMode {
 
         d.beginTranslationSide(Distance.fromInches(35), 0.7);//pushes mineral
         Thread.sleep(1000);
-        SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, new File("/storage/self/primary/FoundGold.wav"));
+        SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, new File(Config.SOUND_FILE));
 
         while (!isStopRequested() && d.isBusy());
 
