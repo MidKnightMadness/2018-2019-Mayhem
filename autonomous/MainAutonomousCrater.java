@@ -59,6 +59,8 @@ public class MainAutonomousCrater extends LinearOpMode {
         MineralArm m = AssemblyManager.newInstance(MineralArm.class, hardwareMap, telemetry);
 
         waitForStart();
+        SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, new File(Config.SOUND_FILE));
+
         //v.startTfod();
         p.open(); // Lower bot from hanging position
         d.backward();// Run backward to align bot with lander wall
@@ -127,7 +129,6 @@ public class MainAutonomousCrater extends LinearOpMode {
 
 
         d.beginTranslationSide(Distance.fromInches(14), 0.7);//pushes mineral
-        SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, new File(Config.SOUND_FILE));
         Thread.sleep(1000);
 
         d.beginTranslationSide(Distance.fromInches(-9), 0.7);//moves back from mineral

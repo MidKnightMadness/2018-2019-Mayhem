@@ -51,6 +51,7 @@ public class MainAutonomousDepot extends LinearOpMode {
         MineralArm m = AssemblyManager.newInstance(MineralArm.class, hardwareMap, telemetry);
 
         waitForStart();
+        SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, new File(Config.SOUND_FILE));
         //v.startTfod();
         p.open(); // Lower bot from hanging position
         d.backward();// Run backward to align bot with lander wall
@@ -119,7 +120,6 @@ public class MainAutonomousDepot extends LinearOpMode {
 
         d.beginTranslationSide(Distance.fromInches(35), 0.7);//pushes mineral
         Thread.sleep(1000);
-        SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, new File(Config.SOUND_FILE));
 
         while (!isStopRequested() && d.isBusy());
 

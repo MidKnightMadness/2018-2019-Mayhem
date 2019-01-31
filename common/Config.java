@@ -40,6 +40,6 @@ public final class Config {
         public static final int ENCODER_TICKS_PER_SHAFT_DEGREE = 1100;
     }
 
-    public static final String SOUND_FILE = "/storage/self/primary/FoundGold.mp4";
+    public static final String SOUND_FILE = "/storage/self/primary/ThemeSong.mp4";
 }
 
