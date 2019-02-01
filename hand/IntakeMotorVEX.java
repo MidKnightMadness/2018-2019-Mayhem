@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.common.Config;
 
-@TeleOp
+//@TeleOp
 public class IntakeMotorVEX extends Hand {
 
     private DcMotor motor;
@@ -35,7 +35,7 @@ public class IntakeMotorVEX extends Hand {
 
 
         if (on) {
-            motor.setPower(-1);
+            motor.setPower(1);
         } else {
             motor.setPower(0);
         }

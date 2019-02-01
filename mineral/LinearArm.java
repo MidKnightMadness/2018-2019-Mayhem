@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.common.Config;
 import org.firstinspires.ftc.teamcode.common.Distance;
 
-@TeleOp
+//@TeleOp
 public class LinearArm extends MineralArm {
     private DcMotor extendMotor;
     private DcMotor rotateMotor;

@@ -1,10 +1,10 @@
-package org.firstinspires.ftc.teamcode.autonomous;
+package org.firstinspires.ftc.teamcode.autonomous.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.common.HubConfig;
+import org.firstinspires.ftc.teamcode.common.Config;
 
 @Autonomous
 public class HubTest extends LinearOpMode{
@@ -12,7 +12,7 @@ public class HubTest extends LinearOpMode{
     @Override
     public void runOpMode() throws InterruptedException {
 
-        DcMotor motor = hardwareMap.dcMotor.get(HubConfig.Drive.BACK_LEFT);
+        DcMotor motor = hardwareMap.dcMotor.get(Config.Drive.BACK_LEFT);
 
         waitForStart();
         motor.setPower(-1);

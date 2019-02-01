@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.common.AssemblyManager;
  * Created by Gregory on 9/14/18.
  */
 
-@Autonomous
+//@Autonomous
 public class MineralTest extends LinearOpMode {
 
 

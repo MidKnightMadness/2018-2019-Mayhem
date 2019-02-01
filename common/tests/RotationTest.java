@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.common.AssemblyManager;
 import org.firstinspires.ftc.teamcode.common.Distance;
 import org.firstinspires.ftc.teamcode.drive.TankDrive;
 
-@TeleOp
+//@TeleOp
 public class RotationTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

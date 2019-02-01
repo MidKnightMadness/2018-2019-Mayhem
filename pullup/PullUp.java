@@ -12,4 +12,5 @@ public abstract class PullUp extends OpMode {
     public abstract void close() throws InterruptedException;
     public abstract void drop() throws InterruptedException;
     public abstract void reset();
+    public abstract void reachCrater();
 }

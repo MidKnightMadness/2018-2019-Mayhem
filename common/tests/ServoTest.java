@@ -1,10 +1,10 @@
-package org.firstinspires.ftc.teamcode.pullup;
+package org.firstinspires.ftc.teamcode.common.tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 
-@Autonomous
+//@Autonomous
 public class ServoTest extends OpMode {
     CRServo servo;
     @Override

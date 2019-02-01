@@ -1,5 +1,13 @@
 package org.firstinspires.ftc.teamcode.common;
 
+import android.media.MediaPlayer;
+import android.net.Uri;
+import android.util.Log;
+
+import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
+
+import java.io.File;
+
 /**
  * Config: Configuration file to hold Motor Names.
  *
@@ -25,6 +33,7 @@ public final class Config {
     public static final class PullUp {     // Pull-up Assembly Configuration
         public static final String PULLUP_MOTOR = "pull up motor"; // Hub 1: 2
         public static final String PULLUP_SERVO = "pull up servo"; // Hub 2: 0
+        public static final String CRATER_SERVO = "crater servo";
 
     }
 
@@ -40,6 +49,17 @@ public final class Config {
         public static final int ENCODER_TICKS_PER_SHAFT_DEGREE = 1100;
     }
 
-    public static final String SOUND_FILE = "/storage/self/primary/ThemeSong.mp4";
+    public static final class Sound {
+        public static final String SOUND_FILE = "/storage/self/primary/ThemeSong.wav";
+        public static final MediaPlayer player = new MediaPlayer();
+        public static void prepare() {
+            try {
+                player.setDataSource(SOUND_FILE);
+            } catch (Exception e) {
+                Log.d("ERROR! ", e.getMessage());
+            }
+            player.prepareAsync();
+        }
+    }
 }
 

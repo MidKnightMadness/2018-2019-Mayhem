@@ -47,11 +47,12 @@ public class MainAutonomousCrater extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {   // This method is run by the OpMode Manager on init until the stop button is pressed.
-        SoundPlayer.getInstance().preload(hardwareMap.appContext, new File(Config.SOUND_FILE));
+        Config.Sound.prepare();
         telemetry.addLine("HI IM ALIVE");
         telemetry.update();
         Drive d = AssemblyManager.newInstance(Drive.class, hardwareMap, telemetry); // Initialize all Assemblies required during the Autonomous program by the interface
         Visual v = AssemblyManager.newInstance(Visual.class, hardwareMap, telemetry);
+
         final PullUp p = AssemblyManager.newInstance(PullUp.class, hardwareMap, telemetry);
         RobotLog.a("STARTING!\n\n\n\n\n\n\n\n");
         Log.d("STARTING!!!", "\n\n\n\n\n\n\n\n\n");
@@ -59,7 +60,7 @@ public class MainAutonomousCrater extends LinearOpMode {
         MineralArm m = AssemblyManager.newInstance(MineralArm.class, hardwareMap, telemetry);
 
         waitForStart();
-        SoundPlayer.getInstance().startPlaying(hardwareMap.appContext, new File(Config.SOUND_FILE));
+        Config.Sound.player.start();
 
         //v.startTfod();
         p.open(); // Lower bot from hanging position
@@ -83,22 +84,19 @@ public class MainAutonomousCrater extends LinearOpMode {
         d.beginTranslation(Distance.fromInches(8), 0.7);//move up from lander
         telemetry.addLine("MOVE UP");
         telemetry.update();
-        Thread.sleep(1000);
-        d.beginRotation(Angle.fromDegrees(-86), 0.7);//turn robot so camera faces minerals
+        while (d.isBusy() && !isStopRequested());
+        d.beginRotation(Angle.fromDegrees(-80), 0.7);//turn robot so camera faces minerals
         telemetry.addLine("ROTATE");
         telemetry.update();
         while (d.isBusy() && !isStopRequested());
-        double waitUntil = getRuntime() + 3;
         Visual.MineralPosition pos = Visual.MineralPosition.UNKNOWN;
-        d.beginRotation(Angle.fromDegrees(-9), 0.7);
+        d.beginRotation(Angle.fromDegrees(-17), 0.5);
         while (pos == Visual.MineralPosition.UNKNOWN && d.isBusy() && !isStopRequested()) {
-            Thread.sleep(250);
             pos = v.findGoldMineral();//use visual to find mineral
             telemetry.addLine(pos.toString());//make telemetry tell us where the mineral is
         }
         while (d.isBusy() && !isStopRequested());
         Thread.sleep(100);
-
 
 
         d.beginTranslationSide(Distance.fromInches(6), 0.7);//move up more
@@ -109,7 +107,7 @@ public class MainAutonomousCrater extends LinearOpMode {
         telemetry.addLine("ADJUSTED");
         telemetry.update();
         int MINERAL_DISTANCE;
-        if(pos == Visual.MineralPosition.LEFT || pos == Visual.MineralPosition.UNKNOWN){
+        if(pos == Visual.MineralPosition.LEFT){
             MINERAL_DISTANCE = 8;
 
         } else if (pos == Visual.MineralPosition.CENTER){
@@ -160,6 +158,8 @@ public class MainAutonomousCrater extends LinearOpMode {
         telemetry.update();
         d.beginTranslationSide(Distance.fromInches(20), 0.4);
         Thread.sleep(2000);
+        d.beginTranslationSide(Distance.fromInches(-2), 0.4);
+        while (!isStopRequested() && d.isBusy());
         d.beginTranslationAngled(Distance.fromInches(45), 5, 1);//quickly move towards depot
         telemetry.addLine("CHARGING");
         telemetry.update();
@@ -168,6 +168,7 @@ public class MainAutonomousCrater extends LinearOpMode {
         d.beginTranslationAngled(Distance.fromInches(-60), 1, 0.7);//quickly run back
         while (!isStopRequested() && d.isBusy());
         //m.rotate();
+        p.reachCrater();
         d.stop();
         v.stop();
     }

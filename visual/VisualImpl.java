@@ -35,7 +35,7 @@ import static org.firstinspires.ftc.teamcode.visual.Visual.MineralPosition.UNKNO
  * Created by Gregory on 9/14/18.
  */
 
-@TeleOp
+//@TeleOp
 public class VisualImpl extends Visual {
 
     private VuforiaLocalizer vuforia;

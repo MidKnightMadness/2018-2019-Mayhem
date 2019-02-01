@@ -37,7 +37,7 @@ import java.io.File;
 
 
 @Autonomous                                                 // Comment out annotation to remove from list on Driver Station
-public class MainAutonomousDepot extends LinearOpMode {
+public class MainAutonomousDepotShort extends LinearOpMode {
     public void runOpMode() throws InterruptedException {   // This method is run by the OpMode Manager on init until the stop button is pressed.
         Config.Sound.prepare();
         telemetry.addLine("HI IM ALIVE");
@@ -52,6 +52,7 @@ public class MainAutonomousDepot extends LinearOpMode {
 
         waitForStart();
         Config.Sound.player.start();
+
         //v.startTfod();
         p.open(); // Lower bot from hanging position
         d.backward();// Run backward to align bot with lander wall
@@ -152,25 +153,15 @@ public class MainAutonomousDepot extends LinearOpMode {
         while (!isStopRequested() && d.isBusy());
         telemetry.addLine("CLOSE");
         telemetry.update();
-        Thread.sleep(7000);
+        Thread.sleep(4000);
         d.beginTranslationSide(Distance.fromInches(-24), 0.5);
         while (!isStopRequested() && d.isBusy());
         d.beginRotation(Angle.fromDegrees(60), 0.6);//turn to align with field wall
         telemetry.addLine("ROTATE");
         telemetry.update();
         while (!isStopRequested() && d.isBusy());
-        d.beginTranslationSide(Distance.fromInches(-16), 0.7);
-        while (!isStopRequested() && d.isBusy());
-        d.beginTranslationSide(Distance.fromInches(3), 0.7);
-        while (!isStopRequested() && d.isBusy());
 
-
-
-        while (!isStopRequested() && d.isBusy());
-        d.beginTranslationAngled(Distance.fromInches(-45), -5, 1);//quickly move towards depot
-        telemetry.addLine("CHARGING");
-        telemetry.update();
-        Thread.sleep(3000);
+        p.reachCrater();
         d.stop();
         v.stop();
     }

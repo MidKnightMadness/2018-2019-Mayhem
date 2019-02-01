@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.common.Angle;
 import org.firstinspires.ftc.teamcode.common.Config;
 import org.firstinspires.ftc.teamcode.common.Distance;
 
-@TeleOp
+//@TeleOp
 public class OmniDrive extends Drive {
 
     private BNO055IMU imu;

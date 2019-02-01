@@ -8,10 +8,11 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.common.Config;
 
-@TeleOp
+//@TeleOp
 public class AngularPullUp extends PullUp {
     public DcMotor pullUpMotor;
     private Servo pullUpServo;
+    private Servo craterServo;
     private double POWER_TO_OPEN_PULLUP = 1;
     private final int TARGET_POSITION_TO_OPEN = 11000;
 
@@ -19,6 +20,8 @@ public class AngularPullUp extends PullUp {
 
     @Override
     public void init() {
+        craterServo = hardwareMap.servo.get(Config.PullUp.CRATER_SERVO);
+        craterServo.setPosition(0);
         pullUpMotor = hardwareMap.dcMotor.get(Config.PullUp.PULLUP_MOTOR);
         pullUpServo = hardwareMap.servo.get(Config.PullUp.PULLUP_SERVO);
         pullUpMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -79,10 +82,6 @@ public class AngularPullUp extends PullUp {
         pullUpMotor.setPower(0);
     }
 
-    public void resetTeleOp() throws InterruptedException {
-
-    }
-
     public void close() throws InterruptedException {
         pullUpMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         pullUpMotor.setTargetPosition(0);
@@ -100,6 +99,15 @@ public class AngularPullUp extends PullUp {
     public void reset() {
         pullUpMotor.setPower(0.8);
         pullUpMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
+    public void reachCrater() {
+        craterServo.setPosition(1);
+        try {
+            Thread.sleep(1000);
+        } catch (Exception e) {
+
+        }
     }
 
     private enum State {

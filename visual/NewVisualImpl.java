@@ -28,7 +28,7 @@ import java.io.FileOutputStream;
  * Created by Gregory on 9/14/18.
  */
 
-@TeleOp
+//@TeleOp
 public class NewVisualImpl extends Visual {
 
     private VuforiaLocalizer vuforia;

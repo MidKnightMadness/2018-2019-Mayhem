@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.common.AssemblyManager;
 import org.firstinspires.ftc.teamcode.common.Distance;
 import org.firstinspires.ftc.teamcode.drive.TankDrive;
 
-@Autonomous
+//@Autonomous
 public class DistanceTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

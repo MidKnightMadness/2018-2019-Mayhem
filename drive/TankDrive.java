@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by Gregory on 9/10/18.
  */
 
-@TeleOp
+//@TeleOp
 public class TankDrive extends Drive {
 
     // Declare Motors

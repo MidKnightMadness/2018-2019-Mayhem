@@ -5,8 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.common.Config;
-@TeleOp
-@Disabled
+//@TeleOp
 public class Shovel extends Hand {
 
     private Servo tiltServo;

@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.common.AssemblyManager;
 
-@TeleOp
+//@TeleOp
 public class ColorPicker extends OpMode {
     private Visual v;
 

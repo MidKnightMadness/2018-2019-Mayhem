@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.autonomous.Tests;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous
+//@Autonomous
 public class ThreadTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

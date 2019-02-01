@@ -4,15 +4,20 @@ import android.util.Log;
 
 import com.qualcomm.ftccommon.SoundPlayer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.RobotLog;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.common.Angle;
 import org.firstinspires.ftc.teamcode.common.AssemblyManager;
 import org.firstinspires.ftc.teamcode.common.Config;
 import org.firstinspires.ftc.teamcode.common.Distance;
 import org.firstinspires.ftc.teamcode.drive.Drive;
+import org.firstinspires.ftc.teamcode.hand.Hand;
 import org.firstinspires.ftc.teamcode.mineral.MineralArm;
+import org.firstinspires.ftc.teamcode.pullup.AngularPullUp;
 import org.firstinspires.ftc.teamcode.pullup.PullUp;
 import org.firstinspires.ftc.teamcode.visual.Visual;
 
@@ -37,7 +42,10 @@ import java.io.File;
 
 
 @Autonomous                                                 // Comment out annotation to remove from list on Driver Station
-public class MainAutonomousDepot extends LinearOpMode {
+public class MainAutonomousCraterShort extends LinearOpMode {
+
+
+    @Override
     public void runOpMode() throws InterruptedException {   // This method is run by the OpMode Manager on init until the stop button is pressed.
         Config.Sound.prepare();
         telemetry.addLine("HI IM ALIVE");
@@ -52,6 +60,7 @@ public class MainAutonomousDepot extends LinearOpMode {
 
         waitForStart();
         Config.Sound.player.start();
+
         //v.startTfod();
         p.open(); // Lower bot from hanging position
         d.backward();// Run backward to align bot with lander wall
@@ -111,6 +120,7 @@ public class MainAutonomousDepot extends LinearOpMode {
 
         }//if/elif/else decides where to go depending on where the bot thinks gold is
 
+
         d.beginTranslation(Distance.fromInches(MINERAL_DISTANCE), 0.7);//move to gold mineral
         telemetry.addLine("MOVING TO MINERAL");
         telemetry.update();
@@ -118,59 +128,10 @@ public class MainAutonomousDepot extends LinearOpMode {
         Thread.sleep(100);
 
 
-        d.beginTranslationSide(Distance.fromInches(35), 0.7);//pushes mineral
+        d.beginTranslationSide(Distance.fromInches(14), 0.7);//pushes mineral
         Thread.sleep(1000);
 
-        while (!isStopRequested() && d.isBusy());
-
-        if (pos == Visual.MineralPosition.CENTER) {
-            d.beginTranslationSide(Distance.fromInches(10), 0.7);//pushes mineral
-            while (!isStopRequested() && d.isBusy());
-            d.beginTranslationSide(Distance.fromInches(-10), 0.7);//pushes mineral
-            while (!isStopRequested() && d.isBusy());
-        }
-
-        d.beginTranslation(Distance.fromInches(-MINERAL_DISTANCE-6), 0.7);//moves to field wall
-        telemetry.addLine("MOVE BACK");
-        telemetry.update();
-        while (!isStopRequested() && d.isBusy());
-        Thread.sleep(100);
-        Thread drop = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    p.drop();
-                } catch (InterruptedException e) {
-                    telemetry.addLine(e.getMessage());
-                }
-            }
-        });//creates a thread that closes the pullup arm while the robot keeps moving
-        drop.start();
-        d.beginRotation(Angle.fromDegrees(90), 0.6);//turn to align with field wall
-        telemetry.addLine("ROTATE");
-        telemetry.update();
-        while (!isStopRequested() && d.isBusy());
-        telemetry.addLine("CLOSE");
-        telemetry.update();
-        Thread.sleep(7000);
-        d.beginTranslationSide(Distance.fromInches(-24), 0.5);
-        while (!isStopRequested() && d.isBusy());
-        d.beginRotation(Angle.fromDegrees(60), 0.6);//turn to align with field wall
-        telemetry.addLine("ROTATE");
-        telemetry.update();
-        while (!isStopRequested() && d.isBusy());
-        d.beginTranslationSide(Distance.fromInches(-16), 0.7);
-        while (!isStopRequested() && d.isBusy());
-        d.beginTranslationSide(Distance.fromInches(3), 0.7);
-        while (!isStopRequested() && d.isBusy());
-
-
-
-        while (!isStopRequested() && d.isBusy());
-        d.beginTranslationAngled(Distance.fromInches(-45), -5, 1);//quickly move towards depot
-        telemetry.addLine("CHARGING");
-        telemetry.update();
-        Thread.sleep(3000);
+        p.reachCrater();
         d.stop();
         v.stop();
     }
