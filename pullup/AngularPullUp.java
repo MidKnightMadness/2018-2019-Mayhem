@@ -84,7 +84,7 @@ public class AngularPullUp extends PullUp {
 
     public void close() throws InterruptedException {
         pullUpMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        pullUpMotor.setTargetPosition(0);
+        pullUpMotor.setTargetPosition(20);
         pullUpMotor.setPower(1);
         while (pullUpMotor.isBusy() && !Thread.currentThread().isInterrupted()) {}
         pullUpMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

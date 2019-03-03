@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.common.Config;
 import org.firstinspires.ftc.teamcode.common.Distance;
 import org.firstinspires.ftc.teamcode.drive.Drive;
 import org.firstinspires.ftc.teamcode.hand.Hand;
+import org.firstinspires.ftc.teamcode.mineral.LinearArm;
 import org.firstinspires.ftc.teamcode.mineral.MineralArm;
 import org.firstinspires.ftc.teamcode.pullup.AngularPullUp;
 import org.firstinspires.ftc.teamcode.pullup.PullUp;
@@ -53,6 +54,7 @@ public class MainAutonomousCraterShort extends LinearOpMode {
         Drive d = AssemblyManager.newInstance(Drive.class, hardwareMap, telemetry); // Initialize all Assemblies required during the Autonomous program by the interface
         Visual v = AssemblyManager.newInstance(Visual.class, hardwareMap, telemetry);
         final PullUp p = AssemblyManager.newInstance(PullUp.class, hardwareMap, telemetry);
+        LinearArm l = AssemblyManager.newInstance(LinearArm.class, hardwareMap, telemetry);
         RobotLog.a("STARTING!\n\n\n\n\n\n\n\n");
         Log.d("STARTING!!!", "\n\n\n\n\n\n\n\n\n");
         //Hand h = AssemblyManager.newInstance(Hand.class, hardwareMap, telemetry);
@@ -131,7 +133,7 @@ public class MainAutonomousCraterShort extends LinearOpMode {
         d.beginTranslationSide(Distance.fromInches(14), 0.7);//pushes mineral
         Thread.sleep(1000);
 
-        p.reachCrater();
+        l.extend();
         d.stop();
         v.stop();
     }

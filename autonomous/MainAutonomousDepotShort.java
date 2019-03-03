@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.common.AssemblyManager;
 import org.firstinspires.ftc.teamcode.common.Config;
 import org.firstinspires.ftc.teamcode.common.Distance;
 import org.firstinspires.ftc.teamcode.drive.Drive;
+import org.firstinspires.ftc.teamcode.mineral.LinearArm;
 import org.firstinspires.ftc.teamcode.mineral.MineralArm;
 import org.firstinspires.ftc.teamcode.pullup.PullUp;
 import org.firstinspires.ftc.teamcode.visual.Visual;
@@ -45,6 +46,7 @@ public class MainAutonomousDepotShort extends LinearOpMode {
         Drive d = AssemblyManager.newInstance(Drive.class, hardwareMap, telemetry); // Initialize all Assemblies required during the Autonomous program by the interface
         Visual v = AssemblyManager.newInstance(Visual.class, hardwareMap, telemetry);
         final PullUp p = AssemblyManager.newInstance(PullUp.class, hardwareMap, telemetry);
+        LinearArm l = AssemblyManager.newInstance(LinearArm.class, hardwareMap, telemetry);
         RobotLog.a("STARTING!\n\n\n\n\n\n\n\n");
         Log.d("STARTING!!!", "\n\n\n\n\n\n\n\n\n");
         //Hand h = AssemblyManager.newInstance(Hand.class, hardwareMap, telemetry);
@@ -161,7 +163,7 @@ public class MainAutonomousDepotShort extends LinearOpMode {
         telemetry.update();
         while (!isStopRequested() && d.isBusy());
 
-        p.reachCrater();
+        l.extend();
         d.stop();
         v.stop();
     }

@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.common.Config;
 import org.firstinspires.ftc.teamcode.common.Distance;
 import org.firstinspires.ftc.teamcode.drive.Drive;
 import org.firstinspires.ftc.teamcode.hand.Hand;
+import org.firstinspires.ftc.teamcode.mineral.LinearArm;
 import org.firstinspires.ftc.teamcode.mineral.MineralArm;
 import org.firstinspires.ftc.teamcode.pullup.AngularPullUp;
 import org.firstinspires.ftc.teamcode.pullup.PullUp;
@@ -47,12 +48,13 @@ public class MainAutonomousCrater extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {   // This method is run by the OpMode Manager on init until the stop button is pressed.
+
         Config.Sound.prepare();
         telemetry.addLine("HI IM ALIVE");
         telemetry.update();
         Drive d = AssemblyManager.newInstance(Drive.class, hardwareMap, telemetry); // Initialize all Assemblies required during the Autonomous program by the interface
         Visual v = AssemblyManager.newInstance(Visual.class, hardwareMap, telemetry);
-
+        LinearArm l = AssemblyManager.newInstance(LinearArm.class, hardwareMap, telemetry);
         final PullUp p = AssemblyManager.newInstance(PullUp.class, hardwareMap, telemetry);
         RobotLog.a("STARTING!\n\n\n\n\n\n\n\n");
         Log.d("STARTING!!!", "\n\n\n\n\n\n\n\n\n");
@@ -114,7 +116,7 @@ public class MainAutonomousCrater extends LinearOpMode {
             MINERAL_DISTANCE = -6;
 
         } else {
-            MINERAL_DISTANCE = -22;
+            MINERAL_DISTANCE = -26;
 
         }//if/elif/else decides where to go depending on where the bot thinks gold is
 
@@ -126,13 +128,15 @@ public class MainAutonomousCrater extends LinearOpMode {
         Thread.sleep(100);
 
 
-        d.beginTranslationSide(Distance.fromInches(14), 0.7);//pushes mineral
-        Thread.sleep(1000);
+        d.beginTranslationSide(Distance.fromInches(10), 0.7);//pushes mineral
+        while (!isStopRequested() && d.isBusy());
+        //Thread.sleep(1000);
 
-        d.beginTranslationSide(Distance.fromInches(-9), 0.7);//moves back from mineral
+        d.beginTranslationSide(Distance.fromInches(-6), 0.7);//moves back from mineral
         telemetry.addLine("MOVE OUT");
         telemetry.update();
-        Thread.sleep(1000);
+        while (!isStopRequested() && d.isBusy());
+        //Thread.sleep(1000);
 
         d.beginTranslation(Distance.fromInches(-MINERAL_DISTANCE+27), 0.7);//moves to field wall
         telemetry.addLine("MOVE BACK");
@@ -147,28 +151,31 @@ public class MainAutonomousCrater extends LinearOpMode {
             @Override
             public void run() {
                 try {
-                    p.drop();
+                    Thread.sleep(250);
+                    p.close();
                 } catch (InterruptedException e) {
                     telemetry.addLine(e.getMessage());
                 }
             }
         });//creates a thread that closes the pullup arm while the robot keeps moving
-        drop.start();
         telemetry.addLine("CLOSE");
         telemetry.update();
         d.beginTranslationSide(Distance.fromInches(20), 0.4);
         Thread.sleep(2000);
         d.beginTranslationSide(Distance.fromInches(-2), 0.4);
         while (!isStopRequested() && d.isBusy());
-        d.beginTranslationAngled(Distance.fromInches(45), 5, 1);//quickly move towards depot
+        d.beginRotation(Angle.fromDegrees(-5), 0.6);
+        while (!isStopRequested() && d.isBusy());
+        drop.start();
+        d.beginTranslation(Distance.fromInches(45), 1);//quickly move towards depot
         telemetry.addLine("CHARGING");
         telemetry.update();
         Thread.sleep(3000);
         drop.join();//stops the thread that was closing the arm
-        d.beginTranslationAngled(Distance.fromInches(-60), 1, 0.7);//quickly run back
+        d.beginTranslation(Distance.fromInches(-56), 0.7);//quickly run back
+        l.extend();
         while (!isStopRequested() && d.isBusy());
         //m.rotate();
-        p.reachCrater();
         d.stop();
         v.stop();
     }

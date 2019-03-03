@@ -137,4 +137,11 @@ public class LinearArm extends MineralArm {
         rotateMotor.setPower(1);
         while (rotateMotor.isBusy() && !Thread.currentThread().isInterrupted());
     }
+
+    public void extend() throws InterruptedException {
+        extendMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        extendMotor.setTargetPosition(5300);
+        extendMotor.setPower(1);
+        Thread.sleep(2000);
+    }
 }

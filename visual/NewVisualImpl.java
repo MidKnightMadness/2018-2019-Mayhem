@@ -175,6 +175,13 @@ public class NewVisualImpl extends Visual {
                 telemetry.addData("White Left", whiteCount[0]);
                 telemetry.addData("White Right", whiteCount[1]);
 
+                Log.d("Yellow Left", yellowCount[0] + "");
+                Log.d("Yellow Right", yellowCount[1] + "");
+                Log.d("White Left", whiteCount[0] + "");
+                Log.d("White Right", whiteCount[1] + "");
+
+
+
                 for (int j = 0; j < 2; j++) {
                     areYellow[j] = (yellowCount[j] / whiteCount[j] > 1);
                 }
@@ -186,6 +193,7 @@ public class NewVisualImpl extends Visual {
                 }
 
                 telemetry.addData("The Gold mineral is on the", pos.toString());
+                Log.d("The Gold mineral is on", pos.toString());
                 telemetry.update();
 
 

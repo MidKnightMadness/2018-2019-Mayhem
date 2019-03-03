@@ -2,7 +2,10 @@ package org.firstinspires.ftc.teamcode.common;
 
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.util.Log;
+
+import com.qualcomm.ftccommon.SoundPlayer;
 
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 
@@ -52,14 +55,28 @@ public final class Config {
     public static final class Sound {
         public static final String SOUND_FILE = "/storage/self/primary/ThemeSong.wav";
         public static final MediaPlayer player = new MediaPlayer();
+        private static boolean prepared = false;
         public static void prepare() {
-            try {
-                player.setDataSource(SOUND_FILE);
-            } catch (Exception e) {
-                Log.d("ERROR! ", e.getMessage());
+
+            if (!prepared) {
+                try {
+                    player.setDataSource(SOUND_FILE);
+                    prepared = true;
+                } catch (Exception e) {
+                    Log.d("ERROR! ", e.getMessage());
+                }
+                player.prepareAsync();
             }
-            player.prepareAsync();
+            if (isLocalSoundOn()) {
+                player.setVolume(1, 1);
+            } else {
+                player.setVolume(0, 0);
+            }
         }
+    }
+    public static final boolean isLocalSoundOn()
+    {
+        return PreferenceManager.getDefaultSharedPreferences(AppUtil.getDefContext()).getBoolean(AppUtil.getDefContext().getString(com.qualcomm.ftccommon.R.string.pref_sound_on_off), true);
     }
 }
 

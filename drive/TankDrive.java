@@ -166,15 +166,15 @@ public class TankDrive extends Drive {
     }
 
     public void beginTranslationAngled(Distance distance, int sign, double speed) {
-        frontLeft.setTargetPosition(frontLeft.getCurrentPosition() - distance.toEncoderTicks() - (int)Math.round(sign*Math.tan(Math.toRadians(5)))*distance.toEncoderTicks());
-        frontRight.setTargetPosition(frontRight.getCurrentPosition() + distance.toEncoderTicks() - (int)Math.round(sign*Math.tan(Math.toRadians(5)))*distance.toEncoderTicks());
-        backLeft.setTargetPosition(backLeft.getCurrentPosition() - distance.toEncoderTicks() + (int)Math.round(sign*Math.tan(Math.toRadians(5)))*distance.toEncoderTicks());
-        backRight.setTargetPosition(backRight.getCurrentPosition() + distance.toEncoderTicks() + (int)Math.round(sign*Math.tan(Math.toRadians(5)))*distance.toEncoderTicks());
+        frontLeft.setTargetPosition(frontLeft.getCurrentPosition() - distance.toEncoderTicks() - (int)Math.round(Math.tan(Math.toRadians(sign)))*distance.toEncoderTicks());
+        frontRight.setTargetPosition(frontRight.getCurrentPosition() + distance.toEncoderTicks() - (int)Math.round(Math.tan(Math.toRadians(sign)))*distance.toEncoderTicks());
+        backLeft.setTargetPosition(backLeft.getCurrentPosition() - distance.toEncoderTicks() + (int)Math.round(Math.tan(Math.toRadians(sign)))*distance.toEncoderTicks());
+        backRight.setTargetPosition(backRight.getCurrentPosition() + distance.toEncoderTicks() + (int)Math.round(Math.tan(Math.toRadians(sign)))*distance.toEncoderTicks());
 
-        frontLeft.setPower(-speed);
-        frontRight.setPower(speed);
-        backLeft.setPower(-speed);
-        backRight.setPower(speed);
+        frontLeft.setPower((speed - 0.1) - (int)Math.round(Math.tan(Math.toRadians(sign)))*speed);
+        frontRight.setPower(-(speed - 0.1) - (int)Math.round(Math.tan(Math.toRadians(sign)))*speed);
+        backLeft.setPower(-(speed - 0.1) + (int)Math.round(Math.tan(Math.toRadians(sign)))*speed);
+        backRight.setPower((speed - 0.1) + (int)Math.round(Math.tan(Math.toRadians(sign)))*speed);
 
     }
 

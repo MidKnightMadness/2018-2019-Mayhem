@@ -15,8 +15,9 @@ import org.firstinspires.ftc.teamcode.common.Config;
 public class IntakeMotorVEX extends Hand {
 
     private DcMotor motor;
-    private boolean on = false;
-    private boolean dpad = false;
+    private int state = 0;
+    private boolean dpad_l = false;
+    private boolean dpad_r = false;
 
     public void init() {
         motor = hardwareMap.dcMotor.get(Config.Hand.HAND_MOTOR);
@@ -26,19 +27,20 @@ public class IntakeMotorVEX extends Hand {
     public void start() {}
 
     public void loop() {
-        if (gamepad2.dpad_left && !dpad) {
-            dpad = true;
-            on = !on;
+        if (gamepad2.dpad_left && !dpad_l) {
+            dpad_l = true;
+            state = state == 0 ? 1 : 0;
         } else if (!gamepad2.dpad_left){
-            dpad = false;
+            dpad_l = false;
+        }
+        if (gamepad2.dpad_right && !dpad_r) {
+            dpad_r = true;
+            state = state == 0 ? -1 : 0;
+        } else if (!gamepad2.dpad_right){
+            dpad_r = false;
         }
 
-
-        if (on) {
-            motor.setPower(1);
-        } else {
-            motor.setPower(0);
-        }
+        motor.setPower(state);
 
         /*if (gamepad2.dpad_left) {
             motor.setPower(-1);
